@@ -1,1 +1,1 @@
-# service-communication-wrapper
+# A wrapper to provide different functions for communication over different protocols between internal services.

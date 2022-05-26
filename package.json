@@ -1,0 +1,26 @@
+{
+  "name": "service-communication-wrapper",
+  "version": "1.0.0",
+  "description": "A communication wrapper to support any interservice communication",
+  "main": "index.js",
+  "types": "types/index.d.ts",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quizizz/service-communication-wrapper.git"
+  },
+  "author": "Quizizz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quizizz/service-communication-wrapper/issues"
+  },
+  "homepage": "https://github.com/quizizz/service-communication-wrapper#readme",
+  "dependencies": {
+    "axios": "^0.27.2"
+  }
+}
