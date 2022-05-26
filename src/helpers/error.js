@@ -20,4 +20,4 @@
     }
   }
   
-  export default QError;
+  module.exports = QError;

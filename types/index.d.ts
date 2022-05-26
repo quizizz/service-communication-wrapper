@@ -4,10 +4,10 @@ export class HttpCommunication {
     /**
      * HttpCommunication to communicate with another service
      * @param name
-     * @param baseUrl
+     * @param baseURL
      * @param axiosConfig
      */
-    constructor({ name, baseUrl, axiosConfig } : { name: string, baseUrl: string, axiosConfig?: AxiosRequestConfig });
+    constructor({ name, baseURL, axiosConfig } : { name: string, baseURL: string, axiosConfig?: AxiosRequestConfig });
 
     /**
      * Http Get Request

@@ -109,4 +109,4 @@ class HttpCommunication {
     }
 }
 
-export default HttpCommunication;
+module.exports = HttpCommunication;

@@ -1,5 +1,5 @@
 const HttpCommunication = require('./src/http');
 
-export default {
+module.exports = {
     HttpCommunication,
 };
