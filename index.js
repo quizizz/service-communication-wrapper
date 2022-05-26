@@ -1,4 +1,4 @@
-import HttpCommunication from './src/http';
+const HttpCommunication = require('./src/http');
 
 export default {
     HttpCommunication,

@@ -1,6 +1,6 @@
-import QError from '../helpers/error';
-import path from 'path';
-import Axios from 'axios';
+const QError = require('../helpers/error');
+const path = require('path');
+const Axios =  require('axios');
 
 class HttpCommunication {
     baseURL;
