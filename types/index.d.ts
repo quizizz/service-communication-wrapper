@@ -16,7 +16,7 @@ export class HttpCommunication {
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the get request
      */
-    get<T>(route: string, request: { query: Record<string, string> }): Promise<T>;
+    get<T>(route: string, request: { query: Record<string, string> }, requestId: string): Promise<T>;
 
     /**
      * Http Put Request
@@ -25,7 +25,7 @@ export class HttpCommunication {
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the put request
      */
-    put<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }): Promise<T>;
+    put<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }, requestId: string): Promise<T>;
 
     /**
      * Http Post Request
@@ -34,5 +34,12 @@ export class HttpCommunication {
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the post request
      */
-    post<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }): Promise<T>;
+    post<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }, requestId: string): Promise<T>;
+
+    /**
+     * Function to save the context and generate a requestId that can be used when making any http request to pass the context to other service
+     * @param context
+     * @returns Returns a random generated requestId
+     */
+    generateRequestId(context: Record<string, string>): string;
 }

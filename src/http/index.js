@@ -1,11 +1,13 @@
 const QError = require('../helpers/error');
 const path = require('path');
 const Axios =  require('axios');
+const uuid = require('uuid/v4');
 
 class HttpCommunication {
     baseURL;
     name;
     axiosConfig;
+    requestContext = {};
 
     constructor({ name, baseURL, axiosConfig }) {
       this.name = name;
@@ -60,9 +62,17 @@ class HttpCommunication {
     }
 
     async makeReqeust(params) {
-      const { route, method, request } = params;
+      const { route, method, request, requestId } = params;
       const requestURL = this.createRequestURL(route, request.query);
       let response;
+      const requestContext = this.requestContext[requestId];
+
+      if (requestContext) {
+        this.axiosConfig.headers = {
+          ...this.axiosConfig.headers,
+          // select which headers we want to pass and pass them
+        }
+      }
 
       if (method === 'get') {
         response = await Axios.get(
@@ -81,31 +91,40 @@ class HttpCommunication {
       return response.data;
     }
 
-    async post(route, request) {
+    async post(route, request, requestId) {
       const data = await this.makeReqeust({
         method: 'post',
         route,
         request,
+        requestId,
       });
       return data;
     }
 
-    async put(route, request) {
+    async put(route, request, requestId) {
       const data = await this.makeReqeust({
         method: 'put',
         route,
         request,
+        requestId,
       });
       return data;
     }
 
-    async get(route, request) {
+    async get(route, request, requestId) {
       const data = await this.makeReqeust({
         method: 'get',
         route,
         request,
+        requestId,
       });
       return data;
+    }
+
+    generateRequestId(ctx) {
+      const requestId = uuid();
+      this.requestContext[requestId] = ctx;
+      return requestId;
     }
 }
 
