@@ -97,7 +97,6 @@ class HttpCommunication {
         method: 'post',
         route,
         request,
-        requestId,
       });
       return data;
     }
@@ -107,7 +106,6 @@ class HttpCommunication {
         method: 'put',
         route,
         request,
-        requestId,
       });
       return data;
     }
@@ -117,7 +115,6 @@ class HttpCommunication {
         method: 'get',
         route,
         request,
-        requestId,
       });
       return data;
     }
