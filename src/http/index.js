@@ -7,7 +7,7 @@ class HttpCommunication {
     axiosConfig;
     contextStorage;
 
-    constructor({ name, axiosConfig, contextStoragex }) {
+    constructor({ name, axiosConfig, contextStorage }) {
       this.name = name;
       // default axios config
       this.axiosConfig = {
