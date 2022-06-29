@@ -4,11 +4,10 @@ export class HttpCommunication {
     /**
      * HttpCommunication to communicate with another service
      * @param name
-     * @param baseURL
      * @param axiosConfig
      * @param contextStorage {AsyncLocalStorage}
      */
-    constructor({ name, baseURL, axiosConfig, contextStorage } : { name: string, baseURL: string, axiosConfig?: AxiosRequestConfig, contextStorage?: any });
+    constructor({ name, axiosConfig, contextStorage } : { name: string, axiosConfig?: AxiosRequestConfig, contextStorage?: any });
 
     /**
      * Http Get Request
