@@ -3,14 +3,12 @@ const path = require('path');
 const Axios =  require('axios');
 
 class HttpCommunication {
-    baseURL;
     name;
     axiosConfig;
     contextStorage;
 
-    constructor({ name, baseURL, axiosConfig, contextStorage }) {
+    constructor({ name, axiosConfig, contextStoragex }) {
       this.name = name;
-      this.baseURL = baseURL;
       // default axios config
       this.axiosConfig = {
         headers: {
@@ -55,9 +53,9 @@ class HttpCommunication {
       }
     }
 
-    createRequestURL(route, query = {}) {
+    createRequestURL(url, query = {}) {
       const searchParams = new URLSearchParams(query);
-      const finalURL = new URL(path.join(this.baseURL, route));
+      const finalURL = new URL(url);
       finalURL.search = searchParams.toString();
       return finalURL.toString();
     }
