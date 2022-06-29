@@ -1,15 +1,14 @@
 const QError = require('../helpers/error');
 const path = require('path');
 const Axios =  require('axios');
-const uuid = require('uuid/v4');
 
 class HttpCommunication {
     baseURL;
     name;
     axiosConfig;
-    requestContext = {};
+    contextStorage;
 
-    constructor({ name, baseURL, axiosConfig }) {
+    constructor({ name, baseURL, axiosConfig, contextStorage }) {
       this.name = name;
       this.baseURL = baseURL;
       // default axios config
@@ -25,6 +24,8 @@ class HttpCommunication {
       if (axiosConfig) {
         this.axiosConfig = axiosConfig;
       }
+
+      this.contextStorage = contextStorage;
     }
 
     handleError(params, response) {
@@ -62,10 +63,10 @@ class HttpCommunication {
     }
 
     async makeReqeust(params) {
-      const { route, method, request, requestId } = params;
+      const { route, method, request } = params;
       const requestURL = this.createRequestURL(route, request.query);
       let response;
-      const requestContext = this.requestContext[requestId];
+      const requestContext = this.contextStorage ? this.contextStorage.getStore() : null;
 
       if (requestContext) {
         this.axiosConfig.headers = {
@@ -91,7 +92,7 @@ class HttpCommunication {
       return response.data;
     }
 
-    async post(route, request, requestId) {
+    async post(route, request) {
       const data = await this.makeReqeust({
         method: 'post',
         route,
@@ -101,7 +102,7 @@ class HttpCommunication {
       return data;
     }
 
-    async put(route, request, requestId) {
+    async put(route, request) {
       const data = await this.makeReqeust({
         method: 'put',
         route,
@@ -111,7 +112,7 @@ class HttpCommunication {
       return data;
     }
 
-    async get(route, request, requestId) {
+    async get(route, request) {
       const data = await this.makeReqeust({
         method: 'get',
         route,
@@ -119,12 +120,6 @@ class HttpCommunication {
         requestId,
       });
       return data;
-    }
-
-    generateRequestId(ctx) {
-      const requestId = uuid();
-      this.requestContext[requestId] = ctx;
-      return requestId;
     }
 }
 
