@@ -16,7 +16,7 @@ export class HttpCommunication {
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the get request
      */
-    get<T>(route: string, request: { query: Record<string, string> }): Promise<T>;
+    get<T>(route: string, request?: { query: Record<string, string> }): Promise<T>;
 
     /**
      * Http Put Request
