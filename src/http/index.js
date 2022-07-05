@@ -108,7 +108,7 @@ class HttpCommunication {
       return data;
     }
 
-  async get(route, request = {}) {
+    async get(route, request = {}) {
       const data = await this.makeReqeust({
         method: 'get',
         route,
