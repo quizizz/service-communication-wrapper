@@ -61,6 +61,17 @@ class HttpCommunication {
       return finalURL.toString();
     }
 
+    populateHeadersFromContext(ctx) {
+      const customHeaders = {
+        'X-Q-TRACEID': ctx && ctx.traceId ? ctx.traceId : uuid(),
+      };
+      if (ctx) {
+        if (ctx.userId) headers['X-Q-USERID'] = ctx.userId;
+        if (ctx.ab) headers['Q-AB-ROUTE'] = ctx.ab;
+      }
+      return customHeaders;
+    }
+
     async makeReqeust(params) {
       const { route, method, request } = params;
       const requestURL = this.createRequestURL(route, request.query);
@@ -70,7 +81,7 @@ class HttpCommunication {
       if (requestContext) {
         this.axiosConfig.headers = {
           ...this.axiosConfig.headers,
-          // select which headers we want to pass and pass them
+          ...this.populateHeadersFromContext(requestContext),
         }
       }
 
