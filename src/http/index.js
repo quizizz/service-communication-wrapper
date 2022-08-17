@@ -30,13 +30,14 @@ class HttpCommunication {
       const { method, route, request } = params;
       if (response.status >= 400) {
         if (response.data) {
-            const { error } = response.data;
-            throw new QError(error, `${this.name}_internal_service.RESPONSE_ERROR`, {
+          const { error, errorType = 'server.UKW' } = response.data;
+          throw new QError(error, errorType, {
               service: this.name,
               data: response.data,
               request,
               method,
               route,
+              type: errorType,
             }
           );
         }
