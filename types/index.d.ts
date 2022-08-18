@@ -11,8 +11,8 @@ export class HttpCommunication {
 
     /**
      * Http Get Request
-     * @param route 
-     * @param request 
+     * @param route
+     * @param request
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the get request
      */
@@ -20,17 +20,35 @@ export class HttpCommunication {
 
     /**
      * Http Put Request
-     * @param route 
-     * @param request 
+     * @param route
+     * @param request
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the put request
      */
     put<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }): Promise<T>;
 
     /**
+     * Http Delete Request
+     * @param route
+     * @param request
+     * @typeParam T - Response type provided by the callee
+     * @returns Returns response of the put request
+     */
+    delete<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }): Promise<T>;
+
+     /**
+     * Http Patch Request
+     * @param route
+     * @param request
+     * @typeParam T - Response type provided by the callee
+     * @returns Returns response of the put request
+     */
+    patch<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }): Promise<T>;
+
+    /**
      * Http Post Request
-     * @param route 
-     * @param request 
+     * @param route
+     * @param request
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the post request
      */

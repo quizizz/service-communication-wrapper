@@ -67,12 +67,12 @@ class HttpCommunication {
       };
       if (ctx) {
         if (ctx.userId) headers['X-Q-USERID'] = ctx.userId;
-        if (ctx.ab) headers['Q-AB-ROUTE'] = ctx.ab;
+        if (ctx.ab) headers['X-Q-AB-ROUTE'] = ctx.ab;
       }
       return customHeaders;
     }
 
-    async makeReqeust(params) {
+    async makeRequest(params) {
       const { route, method, request } = params;
       const requestURL = this.createRequestURL(route, request.query);
       let response;
@@ -103,7 +103,7 @@ class HttpCommunication {
     }
 
     async post(route, request) {
-      const data = await this.makeReqeust({
+      const data = await this.makeRequest({
         method: 'post',
         route,
         request,
@@ -112,7 +112,7 @@ class HttpCommunication {
     }
 
     async put(route, request) {
-      const data = await this.makeReqeust({
+      const data = await this.makeRequest({
         method: 'put',
         route,
         request,
@@ -120,8 +120,26 @@ class HttpCommunication {
       return data;
     }
 
+    async patch(route, request) {
+      const data = await this.makeRequest({
+        method: 'patch',
+        route,
+        request,
+      });
+      return data;
+    }
+
+    async delete(route, request) {
+      const data = await this.makeRequest({
+        method: 'delete',
+        route,
+        request,
+      });
+      return data;
+    }
+
     async get(route, request = {}) {
-      const data = await this.makeReqeust({
+      const data = await this.makeRequest({
         method: 'get',
         route,
         request,
