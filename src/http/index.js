@@ -63,11 +63,11 @@ class HttpCommunication {
 
     populateHeadersFromContext(ctx) {
       const customHeaders = {
-        'X-Q-TRACEID': ctx && ctx.traceId ? ctx.traceId : uuid(),
+        'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : uuid(),
       };
       if (ctx) {
-        if (ctx.userId) headers['X-Q-USERID'] = ctx.userId;
-        if (ctx.ab) headers['X-Q-AB-ROUTE'] = ctx.ab;
+        if (ctx.userId) customHeaders['X-Q-USERID'] = ctx.userId;
+        if (ctx.ab) customHeaders['X-Q-AB-ROUTE'] = ctx.ab;
       }
       return customHeaders;
     }
