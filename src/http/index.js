@@ -1,6 +1,7 @@
 const QError = require('../helpers/error');
 const path = require('path');
 const Axios =  require('axios');
+const uuid = require('uuid/v4');
 
 class HttpCommunication {
     name;
