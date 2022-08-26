@@ -10,6 +10,14 @@ export class HttpCommunication {
     constructor({ name, axiosConfig, contextStorage } : { name: string, axiosConfig?: AxiosRequestConfig, contextStorage?: any });
 
     /**
+     * Function to generate the context object
+     * @param req {Express Request}
+     * @param customContextValue any custom values that you want to store in the context
+     * Return extracted values from the req headers and any custom values pass to generate the context object
+     */
+    static getRequestContext(req: any, customContextValue: Record<string, unknown>): { traceId: string, userId: string, ab: string };
+
+    /**
      * Http Get Request
      * @param route
      * @param request
