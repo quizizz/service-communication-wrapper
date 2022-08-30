@@ -31,13 +31,13 @@ class HttpCommunication {
     static getRequestContext(req, customContextValue) {
       const start = hrtime.bigint();
       return {
-        traceId: (req.headers && req.headers['X-Q-TRACEID']) ? req.headers['X-Q-TRACEID'] : uuid(),
+        traceId: (req.headers && req.headers['x-q-traceid']) ? req.headers['x-q-traceid'] : uuid(),
         userId: (req.user && req.user.id)
           ? String(req.user.id)
-          : req.headers['X-Q-USERID']
-            ? req.headers['X-Q-USERID']
+          : req.headers['x-q-userid']
+            ? req.headers['x-q-userid']
             : null,
-        ab: (req.headers && req.headers['X-Q-AB-ROUTE']) ? req.headers['X-Q-AB-ROUTE'] : null,
+        ab: (req.headers && (req.headers['x-q-ab-route'] || req.headers['X-Q-AB-ROUTE'])) ? req.headers['x-q-ab-route'] || req.headers['X-Q-AB-ROUTE'] : null,
         reqStartTime: start,
         ...customContextValue,
       };
