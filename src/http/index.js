@@ -32,6 +32,7 @@ class HttpCommunication {
         traceId: (req.headers && req.headers['X-Q-TRACEID']) ? req.headers['X-Q-TRACEID'] : uuid(),
         userId: (req.user && req.user.userId) ? String(req.user.userId) : null,
         ab: (req.headers && req.headers['Q-AB-ROUTE']) ? req.headers['Q-AB-ROUTE'] : null,
+        reqStartTime: process.hrtime(),
         ...customContextValue,
       };
     }
