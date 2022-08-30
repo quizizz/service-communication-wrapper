@@ -1,6 +1,8 @@
 const QError = require('../helpers/error');
 const path = require('path');
 const Axios =  require('axios');
+const uuid = require('uuid/v4');
+const { hrtime } = require('node:process');
 
 class HttpCommunication {
     name;
@@ -26,17 +28,33 @@ class HttpCommunication {
       this.contextStorage = contextStorage;
     }
 
+    static getRequestContext(req, customContextValue) {
+      const start = hrtime.bigint();
+      return {
+        traceId: (req.headers && req.headers['x-q-traceid']) ? req.headers['x-q-traceid'] : uuid(),
+        userId: (req.user && req.user.id)
+          ? String(req.user.id)
+          : req.headers['x-q-userid']
+            ? req.headers['x-q-userid']
+            : null,
+        ab: (req.headers && (req.headers['x-q-ab-route'] || req.headers['X-Q-AB-ROUTE'])) ? req.headers['x-q-ab-route'] || req.headers['X-Q-AB-ROUTE'] : null,
+        reqStartTime: start,
+        ...customContextValue,
+      };
+    }
+
     handleError(params, response) {
       const { method, route, request } = params;
       if (response.status >= 400) {
         if (response.data) {
-            const { error } = response.data;
-            throw new QError(error, `${this.name}_internal_service.RESPONSE_ERROR`, {
+          const { error, errorType = 'server.UKW' } = response.data;
+          throw new QError(error, errorType, {
               service: this.name,
               data: response.data,
               request,
               method,
               route,
+              type: errorType,
             }
           );
         }
@@ -60,7 +78,18 @@ class HttpCommunication {
       return finalURL.toString();
     }
 
-    async makeReqeust(params) {
+    populateHeadersFromContext(ctx) {
+      const customHeaders = {
+        'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : uuid(),
+      };
+      if (ctx) {
+        if (ctx.userId) customHeaders['X-Q-USERID'] = ctx.userId;
+        if (ctx.ab) customHeaders['X-Q-AB-ROUTE'] = ctx.ab;
+      }
+      return customHeaders;
+    }
+
+    async makeRequest(params) {
       const { route, method, request } = params;
       const requestURL = this.createRequestURL(route, request.query);
       let response;
@@ -69,29 +98,26 @@ class HttpCommunication {
       if (requestContext) {
         this.axiosConfig.headers = {
           ...this.axiosConfig.headers,
-          // select which headers we want to pass and pass them
+          ...this.populateHeadersFromContext(requestContext),
         }
       }
 
-      if (method === 'get') {
-        response = await Axios.get(
-            requestURL,
-            this.axiosConfig,
-        );
-      } else {
-        response = await Axios[method](
-            requestURL,
-            request.body || {},
-            this.axiosConfig,
-        );
+      const req = {
+        method,
+        url: requestURL,
+        ...this.axiosConfig,
       }
+      if (request.body) {
+        req['data'] = request.body;
+      }
+      response = await Axios(req);
 
       this.handleError(params, response);
       return response.data;
     }
 
     async post(route, request) {
-      const data = await this.makeReqeust({
+      const data = await this.makeRequest({
         method: 'post',
         route,
         request,
@@ -100,7 +126,7 @@ class HttpCommunication {
     }
 
     async put(route, request) {
-      const data = await this.makeReqeust({
+      const data = await this.makeRequest({
         method: 'put',
         route,
         request,
@@ -108,8 +134,26 @@ class HttpCommunication {
       return data;
     }
 
+    async patch(route, request) {
+      const data = await this.makeRequest({
+        method: 'patch',
+        route,
+        request,
+      });
+      return data;
+    }
+
+    async delete(route, request) {
+      const data = await this.makeRequest({
+        method: 'delete',
+        route,
+        request,
+      });
+      return data;
+    }
+
     async get(route, request = {}) {
-      const data = await this.makeReqeust({
+      const data = await this.makeRequest({
         method: 'get',
         route,
         request,
