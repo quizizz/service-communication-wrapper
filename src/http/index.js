@@ -30,8 +30,12 @@ class HttpCommunication {
     static getRequestContext(req, customContextValue) {
       return {
         traceId: (req.headers && req.headers['X-Q-TRACEID']) ? req.headers['X-Q-TRACEID'] : uuid(),
-        userId: (req.user && req.user.userId) ? String(req.user.userId) : null,
-        ab: (req.headers && req.headers['Q-AB-ROUTE']) ? req.headers['Q-AB-ROUTE'] : null,
+        userId: (req.user && req.user.id)
+          ? String(req.user.id)
+          : req.headers['X-Q-USERID']
+            ? req.headers['X-Q-USERID']
+            : null,
+        ab: (req.headers && req.headers['X-Q-AB-ROUTE']) ? req.headers['X-Q-AB-ROUTE'] : null,
         reqStartTime: process.hrtime(),
         ...customContextValue,
       };
