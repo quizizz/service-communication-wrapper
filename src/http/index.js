@@ -29,7 +29,7 @@ class HttpCommunication {
     }
 
     static getRequestContext(req, customContextValue) {
-      const start = hrtime();
+      const start = hrtime.bigint();
       return {
         traceId: (req.headers && req.headers['X-Q-TRACEID']) ? req.headers['X-Q-TRACEID'] : uuid(),
         userId: (req.user && req.user.id)
