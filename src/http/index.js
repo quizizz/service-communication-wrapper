@@ -2,6 +2,7 @@ const QError = require('../helpers/error');
 const path = require('path');
 const Axios =  require('axios');
 const uuid = require('uuid/v4');
+const { hrtime } = require('node:process');
 
 class HttpCommunication {
     name;
@@ -28,6 +29,7 @@ class HttpCommunication {
     }
 
     static getRequestContext(req, customContextValue) {
+      const start = hrtime.bigint();
       return {
         traceId: (req.headers && req.headers['X-Q-TRACEID']) ? req.headers['X-Q-TRACEID'] : uuid(),
         userId: (req.user && req.user.id)
@@ -36,7 +38,7 @@ class HttpCommunication {
             ? req.headers['X-Q-USERID']
             : null,
         ab: (req.headers && req.headers['X-Q-AB-ROUTE']) ? req.headers['X-Q-AB-ROUTE'] : null,
-        reqStartTime: process.hrtime(),
+        reqStartTime: start,
         ...customContextValue,
       };
     }
