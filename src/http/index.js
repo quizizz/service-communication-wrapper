@@ -102,18 +102,15 @@ class HttpCommunication {
         }
       }
 
-      if (method === 'get') {
-        response = await Axios.get(
-            requestURL,
-            this.axiosConfig,
-        );
-      } else {
-        response = await Axios[method](
-            requestURL,
-            request.body || {},
-            this.axiosConfig,
-        );
+      const req = {
+        method,
+        url: requestURL,
+        ...this.axiosConfig,
       }
+      if (request.body) {
+        req['data'] = request.body;
+      }
+      response = await Axios(req);
 
       this.handleError(params, response);
       return response.data;
