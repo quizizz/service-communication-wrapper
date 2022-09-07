@@ -1,8 +1,8 @@
 const QError = require('../helpers/error');
 const path = require('path');
 const Axios =  require('axios');
-const uuid = require('uuid/v4');
-const { hrtime } = require('node:process');
+const { performance } = require('perf_hooks');
+const crypto = require('crypto');
 
 class HttpCommunication {
     name;
@@ -29,9 +29,10 @@ class HttpCommunication {
     }
 
     static getRequestContext(req, customContextValue) {
-      const start = hrtime.bigint();
+      const start = performance.now()
       return {
-        traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : uuid(),
+        traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : this.generateHexString(32),
+        spanId: this.generateHexString(16),
         userId: (req.user && req.user.id)
           ? String(req.user.id)
           : req.get('x-q-userid'),
@@ -39,6 +40,10 @@ class HttpCommunication {
         reqStartTime: start,
         ...customContextValue,
       };
+    }
+
+    static generateHexString(size) {
+      return crypto.randomBytes(size).toString("hex");
     }
 
     handleError(params, response) {
@@ -78,7 +83,7 @@ class HttpCommunication {
 
     populateHeadersFromContext(ctx) {
       const customHeaders = {
-        'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : uuid(),
+        'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : this.generateHexString(32),
       };
       if (ctx) {
         if (ctx.userId) customHeaders['X-Q-USERID'] = ctx.userId;
