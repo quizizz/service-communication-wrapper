@@ -15,7 +15,7 @@ export class HttpCommunication {
      * @param customContextValue any custom values that you want to store in the context
      * Return extracted values from the req headers and any custom values pass to generate the context object
      */
-    static getRequestContext(req: any, customContextValue?: Record<string, unknown>): { traceId: string, spanId: string, userId: string, ab: string, reqStartTime: Number };
+    static getRequestContext(req: any, customContextValue?: Record<string, unknown>): { traceId: string, spanId: string, userId: string, ab: string, reqStartTime: number };
 
     /**
      * Http Get Request
