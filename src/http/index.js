@@ -31,8 +31,8 @@ class HttpCommunication {
     static getRequestContext(req, customContextValue) {
       const start = performance.now()
       return {
-        traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : this.generateHexString(32),
-        spanId: this.generateHexString(16),
+        traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : this.generateHexString(16),
+        spanId: this.generateHexString(8),
         userId: (req.user && req.user.id)
           ? String(req.user.id)
           : req.get('x-q-userid'),
