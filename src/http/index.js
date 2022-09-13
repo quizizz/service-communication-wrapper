@@ -115,7 +115,7 @@ class HttpCommunication {
       const req = {
         method,
         url: requestURL,
-        axiosConfig,
+        ...axiosConfig,
       }
       if (request.body) {
         req['data'] = request.body;
@@ -131,6 +131,7 @@ class HttpCommunication {
         method: 'post',
         route,
         request,
+        headers,
       });
       return data;
     }
@@ -140,6 +141,7 @@ class HttpCommunication {
         method: 'put',
         route,
         request,
+        headers,
       });
       return data;
     }
@@ -149,6 +151,7 @@ class HttpCommunication {
         method: 'patch',
         route,
         request,
+        headers,
       });
       return data;
     }
@@ -158,6 +161,7 @@ class HttpCommunication {
         method: 'delete',
         route,
         request,
+        headers,
       });
       return data;
     }
@@ -167,6 +171,7 @@ class HttpCommunication {
         method: 'get',
         route,
         request,
+        headers,
       });
       return data;
     }
