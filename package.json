@@ -1,5 +1,5 @@
 {
-  "name": "service-communication-wrapper",
+  "name": "@quizizz/service-communication",
   "version": "1.0.0",
   "description": "A communication wrapper to support any interservice communication",
   "main": "index.js",

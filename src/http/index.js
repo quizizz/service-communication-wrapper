@@ -93,22 +93,29 @@ class HttpCommunication {
     }
 
     async makeRequest(params) {
-      const { route, method, request } = params;
+      const { route, method, request, headers = {} } = params;
       const requestURL = this.createRequestURL(route, request.query);
       let response;
       const requestContext = this.contextStorage ? this.contextStorage.getStore() : null;
+      let finalHeaders = {};
 
       if (requestContext) {
-        this.axiosConfig.headers = {
+        finalHeaders = {
           ...this.axiosConfig.headers,
           ...this.populateHeadersFromContext(requestContext),
-        }
+          ...headers,
+        };
       }
+
+      const axiosConfig = {
+        ...this.axiosConfig,
+        headers: finalHeaders,
+      };
 
       const req = {
         method,
         url: requestURL,
-        ...this.axiosConfig,
+        axiosConfig,
       }
       if (request.body) {
         req['data'] = request.body;
@@ -119,7 +126,7 @@ class HttpCommunication {
       return response.data;
     }
 
-    async post(route, request) {
+    async post(route, request, headers = {}) {
       const data = await this.makeRequest({
         method: 'post',
         route,
@@ -128,7 +135,7 @@ class HttpCommunication {
       return data;
     }
 
-    async put(route, request) {
+    async put(route, request, headers = {}) {
       const data = await this.makeRequest({
         method: 'put',
         route,
@@ -137,7 +144,7 @@ class HttpCommunication {
       return data;
     }
 
-    async patch(route, request) {
+    async patch(route, request, headers = {}) {
       const data = await this.makeRequest({
         method: 'patch',
         route,
@@ -146,7 +153,7 @@ class HttpCommunication {
       return data;
     }
 
-    async delete(route, request) {
+    async delete(route, request, headers = {}) {
       const data = await this.makeRequest({
         method: 'delete',
         route,
@@ -155,7 +162,7 @@ class HttpCommunication {
       return data;
     }
 
-    async get(route, request = {}) {
+    async get(route, request = {}, headers = {}) {
       const data = await this.makeRequest({
         method: 'get',
         route,

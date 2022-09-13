@@ -24,7 +24,7 @@ export class HttpCommunication {
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the get request
      */
-    get<T>(route: string, request?: { query: Record<string, string> }): Promise<T>;
+    get<T>(route: string, request?: { query: Record<string, string> }, headers?: Record<string, unknown>): Promise<T>;
 
     /**
      * Http Put Request
@@ -33,7 +33,7 @@ export class HttpCommunication {
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the put request
      */
-    put<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }): Promise<T>;
+    put<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }, headers?: Record<string, unknown>): Promise<T>;
 
     /**
      * Http Delete Request
@@ -42,7 +42,7 @@ export class HttpCommunication {
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the put request
      */
-    delete<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }): Promise<T>;
+    delete<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }, headers?: Record<string, unknown>): Promise<T>;
 
      /**
      * Http Patch Request
@@ -51,7 +51,7 @@ export class HttpCommunication {
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the put request
      */
-    patch<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }): Promise<T>;
+    patch<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }, headers?: Record<string, unknown>): Promise<T>;
 
     /**
      * Http Post Request
@@ -60,5 +60,5 @@ export class HttpCommunication {
      * @typeParam T - Response type provided by the callee
      * @returns Returns response of the post request
      */
-    post<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }): Promise<T>;
+    post<T>(route: string, request: { query: Record<string, string>, body: Record<string, unknown> }, headers?: Record<string, unknown>): Promise<T>;
 }
