@@ -37,6 +37,7 @@ class HttpCommunication {
           ? String(req.user.id)
           : req.get('x-q-userid'),
         ab: req.get('x-q-ab-route'),
+        debug: req.get('x-q-debug'),
         reqStartTime: start,
         ...customContextValue,
       };
@@ -88,6 +89,7 @@ class HttpCommunication {
       if (ctx) {
         if (ctx.userId) customHeaders['X-Q-USERID'] = ctx.userId;
         if (ctx.ab) customHeaders['X-Q-AB-ROUTE'] = ctx.ab;
+        if (ctx.debug) customHeaders['X-Q-DEBUG'] = ctx.debug;
       }
       return customHeaders;
     }
