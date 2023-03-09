@@ -38,6 +38,7 @@ class HttpCommunication {
           : req.get('x-q-userid'),
         ab: req.get('x-q-ab-route'),
         debug: req.get('x-q-debug'),
+        requestContextToken: req.get('x-q-request-context-token'),
         reqStartTime: start,
         ...customContextValue,
       };
@@ -90,6 +91,7 @@ class HttpCommunication {
         if (ctx.userId) customHeaders['X-Q-USERID'] = ctx.userId;
         if (ctx.ab) customHeaders['X-Q-AB-ROUTE'] = ctx.ab;
         if (ctx.debug) customHeaders['X-Q-DEBUG'] = ctx.debug;
+        if (ctx.requestContextToken) customHeaders['X-Q-REQUEST-CONTEXT-TOKEN'] = ctx.requestContextToken;
       }
       return customHeaders;
     }
