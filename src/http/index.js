@@ -122,10 +122,19 @@ class HttpCommunication {
       if (request.body) {
         req['data'] = request.body;
       }
-      response = await Axios(req);
+      
+      if (req.httpsAgent?.keepAlive) {
+        try {
+          response = await Axios(req);
+          return response.data;
+        } catch(err) {
+          this.handleError(params, err.response);
+          return;
+        }
+      }
 
+      response = await Axios(req);
       this.handleError(params, response);
-      return response.data;
     }
 
     async post(route, request, headers = {}) {
