@@ -3,11 +3,13 @@ const path = require('path');
 const Axios =  require('axios');
 const { performance } = require('perf_hooks');
 const crypto = require('crypto');
+const axios = require('axios');
 
 class HttpCommunication {
     name;
     axiosConfig;
     contextStorage;
+    axiosClient;
 
     constructor({ name, axiosConfig, contextStorage }) {
       this.name = name;
@@ -24,6 +26,8 @@ class HttpCommunication {
       if (axiosConfig) {
         this.axiosConfig = axiosConfig;
       }
+
+      this.axiosClient = new Axios.Axios(this.axiosConfig);
 
       this.contextStorage = contextStorage;
     }
@@ -109,32 +113,23 @@ class HttpCommunication {
         };
       }
 
-      const axiosConfig = {
-        ...this.axiosConfig,
-        headers: finalHeaders,
-      };
-
       const req = {
         method,
         url: requestURL,
-        ...axiosConfig,
+        headers: finalHeaders
       }
+
       if (request.body) {
         req['data'] = request.body;
       }
       
-      if (req.httpsAgent?.keepAlive) {
-        try {
-          response = await Axios(req);
-          return response.data;
-        } catch(err) {
-          this.handleError(params, err.response);
-          return;
-        }
+      try {
+        response = await this.axiosClient.request(req);
+        return response.data;
+      } catch(err) {
+        this.handleError(params, err.response);
+        return;
       }
-
-      response = await Axios(req);
-      this.handleError(params, response);
     }
 
     async post(route, request, headers = {}) {
