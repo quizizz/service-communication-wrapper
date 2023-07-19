@@ -24,7 +24,11 @@ class HttpCommunication {
         },
       };
       if (axiosConfig) {
-        this.axiosConfig = axiosConfig;
+        this.axiosConfig = {
+          ...axios.default.defaults,
+          ...this.axiosConfig,
+          ...axiosConfig,
+        }
       }
 
       this.axiosClient = new Axios.Axios(this.axiosConfig);
