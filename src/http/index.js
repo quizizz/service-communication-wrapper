@@ -11,7 +11,7 @@ class HttpCommunication {
     contextStorage;
     axiosClient;
 
-    constructor({ name, axiosConfig, contextStorage }) {
+    constructor({ name, axiosConfig, contextStorage, errorHandler }) {
       this.name = name;
       // default axios config
       this.axiosConfig = {
@@ -32,7 +32,7 @@ class HttpCommunication {
       }
 
       this.axiosClient = new Axios.Axios(this.axiosConfig);
-
+      this.errorHandler = errorHandler;
       this.contextStorage = contextStorage;
     }
 
@@ -56,6 +56,11 @@ class HttpCommunication {
     }
 
     handleError(params, response) {
+      if (this.errorHandler) {
+        this.errorHandler(params, response);
+        return;
+      }
+
       const { method, route, request } = params;
       if (response.status >= 400) {
         if (response.data) {
@@ -127,13 +132,10 @@ class HttpCommunication {
         req['data'] = request.body;
       }
       
-      try {
-        response = await this.axiosClient.request(req);
-        return response.data;
-      } catch(err) {
-        this.handleError(params, err.response);
-        return;
-      }
+      response = await this.axiosClient.request(req);
+      this.handleError(params, response);
+      
+      return response.data;
     }
 
     async post(route, request, headers = {}) {
