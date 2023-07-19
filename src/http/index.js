@@ -24,7 +24,7 @@ class HttpCommunication {
       };
       if (axiosConfig) {
         this.axiosConfig = {
-          ...axios.default.defaults,
+          ...Axios.default.defaults,
           ...this.axiosConfig,
           ...axiosConfig,
         }
