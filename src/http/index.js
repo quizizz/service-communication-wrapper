@@ -3,7 +3,6 @@ const path = require('path');
 const Axios =  require('axios');
 const { performance } = require('perf_hooks');
 const crypto = require('crypto');
-const axios = require('axios');
 
 class HttpCommunication {
     name;
