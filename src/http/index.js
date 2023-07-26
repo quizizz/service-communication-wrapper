@@ -38,8 +38,10 @@ class HttpCommunication {
           : req.get('x-q-userid'),
         ab: req.get('x-q-ab-route'),
         debug: req.get('x-q-debug'),
+        requestContextToken: req.get('x-q-request-context-token'),
         reqStartTime: start,
-        ...customContextValue,
+        path: req?.route.path,
+        ...customContextValue
       };
     }
 
@@ -84,12 +86,13 @@ class HttpCommunication {
 
     populateHeadersFromContext(ctx) {
       const customHeaders = {
-        'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : this.generateHexString(32),
+        'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : HttpCommunication.generateHexString(32),
       };
       if (ctx) {
         if (ctx.userId) customHeaders['X-Q-USERID'] = ctx.userId;
         if (ctx.ab) customHeaders['X-Q-AB-ROUTE'] = ctx.ab;
         if (ctx.debug) customHeaders['X-Q-DEBUG'] = ctx.debug;
+        if (ctx.requestContextToken) customHeaders['X-Q-REQUEST-CONTEXT-TOKEN'] = ctx.requestContextToken;
       }
       return customHeaders;
     }
