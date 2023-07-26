@@ -40,7 +40,8 @@ class HttpCommunication {
         debug: req.get('x-q-debug'),
         requestContextToken: req.get('x-q-request-context-token'),
         reqStartTime: start,
-        ...customContextValue,
+        path: req?.route.path,
+        ...customContextValue
       };
     }
 
