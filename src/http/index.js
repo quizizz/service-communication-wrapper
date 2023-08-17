@@ -34,6 +34,7 @@ class HttpCommunication {
             throw new QError(error, `${this.name}_internal_service.RESPONSE_ERROR`, {
               service: this.name,
               data: response.data,
+              status: response.status,
               request,
               method,
               route,
