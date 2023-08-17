@@ -67,6 +67,7 @@ class HttpCommunication {
           throw new QError(error, errorType, {
               service: this.name,
               data: response.data,
+              status: response.status,
               request,
               method,
               route,
