@@ -97,7 +97,7 @@ class HttpCommunication {
 
     populateHeadersFromContext(ctx) {
       const customHeaders = {
-        'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : this.generateHexString(32),
+        'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : HttpCommunication.generateHexString(32),
       };
       if (ctx) {
         if (ctx.userId) customHeaders['X-Q-USERID'] = ctx.userId;
