@@ -268,7 +268,7 @@ describe('HttpCommunication', () => {
       });
     });
 
-    // All other methods are resuing the makeRequest method hence not adding tests for them separately
+    // All other methods are reusing the makeRequest method hence not adding tests for them separately
     it('should make a POST request', async () => {
       const data = await httpComm.post('https://test-site/test', {});
       expect(data).toEqual(responseData);
