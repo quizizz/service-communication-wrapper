@@ -97,6 +97,30 @@ describe('HttpCommunication', () => {
       expect(context.debug).toBe('test-debug');
       expect(context.requestContextToken).toBe('test-req-ctx');
     });
+
+    //This test is part of RCA Action Item - https://app.asana.com/0/1203506459903927/1205603105620606
+    it('should generate a request context even if route field is empty', () => {
+
+      //Creating a request which does not have route field
+      const req = {
+        get: jest.fn(header => {
+          if (header === 'x-q-traceid') return 'test-trace-id-1';
+          if (header === 'x-q-userid') return 'test-user-id-1';
+          if (header === 'x-q-ab-route') return 'test-ab-route-1';
+          if (header === 'x-q-debug') return 'test-debug-1';
+          if (header === 'x-q-request-context-token') return 'test-req-ctx-1';
+        }),
+        user: { id: '321' },
+      };
+
+      const context = HttpCommunication.getRequestContext(req);
+
+      expect(context.traceId).toBe('test-trace-id-1');
+      expect(context.userId).toBe('321');
+      expect(context.ab).toBe('test-ab-route-1');
+      expect(context.debug).toBe('test-debug-1');
+      expect(context.requestContextToken).toBe('test-req-ctx-1');
+    });
   });
 
   describe('generateHexString', () => {
