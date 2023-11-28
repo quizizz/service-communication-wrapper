@@ -1,5 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 
+export type RequestErrorHandler = (params: any, response: any) => void;
+
 export class HttpCommunication {
     /**
      * HttpCommunication to communicate with another service
@@ -7,7 +9,7 @@ export class HttpCommunication {
      * @param axiosConfig
      * @param contextStorage {AsyncLocalStorage}
      */
-    constructor({ name, axiosConfig, contextStorage } : { name: string, axiosConfig?: AxiosRequestConfig, contextStorage?: any });
+    constructor({ name, axiosConfig, contextStorage, errorHandler } : { name: string, axiosConfig?: AxiosRequestConfig, contextStorage?: any, errorHandler?: RequestErrorHandler });
 
     /**
      * Function to generate the context object
