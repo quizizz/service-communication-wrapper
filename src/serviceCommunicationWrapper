@@ -1,11 +1,12 @@
-import { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { ServiceCommunicationWrapperInterface } from '../serviceCommunicationWrapperInterface';
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import { ServiceCommunicationWrapperInterface } from '../ServiceCommunicationWrapperConfig';
+import { ServiceCommunicationWrapperConfig } from '../ServiceCommunicationWrapper';
 
 class ServiceWrapper implements ServiceCommunicationWrapperInterface {
   private baseUrl: string;
   private defaultHeaders: Record<string, string>;
 
-  constructor(config: ServiceWrapperConfig) {
+  constructor(config: ServiceCommunicationWrapperConfig) {
     this.baseUrl = config.baseUrl;
     this.defaultHeaders = config.defaultHeaders || {};
   }

@@ -1,0 +1,4 @@
+export interface ServiceCommunicationWrapperConfig {
+  baseUrl: string;
+  defaultHeaders?: Record<string, string>;
+}

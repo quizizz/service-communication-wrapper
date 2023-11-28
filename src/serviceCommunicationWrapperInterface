@@ -1,10 +1,5 @@
 import { AxiosResponse, AxiosRequestConfig } from 'axios';
 
-interface ServiceWrapperConfig {
-  baseUrl: string;
-  defaultHeaders?: Record<string, string>;
-}
-
 export interface ServiceCommunicationWrapperInterface {
   get(endpoint: string, headers?: Record<string, string>, config?: AxiosRequestConfig): Promise<any | null>;
   post(endpoint: string, data?: any, headers?: Record<string, string>, config?: AxiosRequestConfig): Promise<any | null>;
