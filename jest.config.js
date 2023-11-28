@@ -18,7 +18,6 @@ module.exports = {
         isolatedModules: true,
       },
     },
-    globalSetup: '<rootDir>/tests/setup/global-setup.ts',
     rootDir: './',
     moduleNameMapper: {
       '^@app/(.*)$': '<rootDir>/src/$1',
