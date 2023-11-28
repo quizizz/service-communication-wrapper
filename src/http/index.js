@@ -8,8 +8,9 @@ class HttpCommunication {
     name;
     axiosConfig;
     contextStorage;
+    axiosClient;
 
-    constructor({ name, axiosConfig, contextStorage }) {
+    constructor({ name, axiosConfig, contextStorage, errorHandler }) {
       this.name = name;
       // default axios config
       this.axiosConfig = {
@@ -22,9 +23,15 @@ class HttpCommunication {
         },
       };
       if (axiosConfig) {
-        this.axiosConfig = axiosConfig;
+        this.axiosConfig = {
+          ...Axios.default.defaults,
+          ...this.axiosConfig,
+          ...axiosConfig,
+        }
       }
 
+      this.axiosClient = new Axios.Axios(this.axiosConfig);
+      this.errorHandler = errorHandler;
       this.contextStorage = contextStorage;
     }
 
@@ -49,6 +56,10 @@ class HttpCommunication {
     }
 
     handleError(params, response) {
+      if (this.errorHandler) {
+        this.errorHandler(params, response);
+        return;
+      }
       const { method, route, request } = params;
       if (response.status >= 400) {
         if (response.data) {
@@ -56,6 +67,7 @@ class HttpCommunication {
           throw new QError(error, errorType, {
               service: this.name,
               data: response.data,
+              status: response.status,
               request,
               method,
               route,
@@ -111,21 +123,16 @@ class HttpCommunication {
         };
       }
 
-      const axiosConfig = {
-        ...this.axiosConfig,
-        headers: finalHeaders,
-      };
-
       const req = {
         method,
         url: requestURL,
-        ...axiosConfig,
+        headers: finalHeaders,
       }
       if (request.body) {
         req['data'] = request.body;
       }
-      response = await Axios(req);
 
+      response = await this.axiosClient.request(req);
       this.handleError(params, response);
       return response.data;
     }

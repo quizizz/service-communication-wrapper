@@ -22,5 +22,8 @@
   "homepage": "https://github.com/quizizz/service-communication-wrapper#readme",
   "dependencies": {
     "axios": "^0.27.2"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0"
   }
 }
