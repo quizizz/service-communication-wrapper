@@ -2,8 +2,7 @@
   "name": "@quizizz/service-communication",
   "version": "1.0.0",
   "description": "A communication wrapper to support any interservice communication",
-  "main": "index.js",
-  "types": "types/index.d.ts",
+  "main": "dist/index.js",
   "directories": {
     "test": "tests"
   },
@@ -24,6 +23,7 @@
     "axios": "^0.27.2"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0"
+    "@types/axios": "^0.14.0",
+    "@types/node": "^20.10.0"
   }
 }
