@@ -1,3 +1,4 @@
+import CircuitBreaker from 'opossum';
 import QError from '../helpers/error';
 import AxiosStatic, { Axios, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { performance } from 'node:perf_hooks';
@@ -24,6 +25,12 @@ export default class HTTPCommunication {
   axiosConfig?: AxiosRequestConfig;
   contextStorage?: AsyncLocalStorage<any>;
   errorHandler?: RequestErrorHandler;
+  private circuitBreaker = new CircuitBreaker(this.makeRequest, {
+    timeout: 5000, // Set a timeout for requests
+    maxFailures: 3, // Maximum number of failures before opening the circuit
+    resetTimeout: 10000, // Time in milliseconds to wait before attempting to close the circuit
+    errorThresholdPercentage: 50, // Percentage of failed requests before opening the circuit
+  });
 
   /**
    * HTTPCommunication to communicate with another service
@@ -179,12 +186,12 @@ export default class HTTPCommunication {
    * HTTP POST Request
    */
   async post(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
-    const data = await this.makeRequest({
-      method: 'post',
+    const data = await this.executeHTTPRequest(
+      'post',
       route,
       request,
       headers,
-    });
+    );
     return data;
   }
 
@@ -192,12 +199,12 @@ export default class HTTPCommunication {
    * HTTP PUT Request
    */
   async put(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
-    const data = await this.makeRequest({
-      method: 'put',
+    const data = await this.executeHTTPRequest(
+      'put',
       route,
       request,
       headers,
-    });
+    );
     return data;
   }
 
@@ -206,12 +213,12 @@ export default class HTTPCommunication {
    * HTTP PATCH Request
    */
   async patch(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
-    const data = await this.makeRequest({
-      method: 'patch',
+    const data = await this.executeHTTPRequest(
+      'patch',
       route,
       request,
       headers,
-    });
+    );
     return data;
   }
 
@@ -219,12 +226,12 @@ export default class HTTPCommunication {
    * HTTP DELETE Request
    */
   async delete(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
-    const data = await this.makeRequest({
-      method: 'delete',
+    const data = await this.executeHTTPRequest(
+      'delete',
       route,
       request,
       headers,
-    });
+    );
     return data;
   }
 
@@ -233,12 +240,16 @@ export default class HTTPCommunication {
    * HTTP POST Request
    **/
   async get(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
-    const data = await this.makeRequest({
-      method: 'get',
+    const data = await this.executeHTTPRequest(
+      'get',
       route,
       request,
       headers,
-    });
+    );
     return data;
+  }
+
+  private async executeHTTPRequest(method: 'post' | 'get' | 'delete' | 'patch' | 'put', route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any> {
+    return this.circuitBreaker.fire({ method, route, request, headers });
   }
 }
