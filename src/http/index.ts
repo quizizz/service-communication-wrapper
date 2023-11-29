@@ -19,12 +19,20 @@ interface HTTPRequest extends Record<string, any> {
   query?: string | Record<string, string> | string[][] | URLSearchParams | undefined;
 }
 
-export default class HTTPCommunication {
+class HTTPCommunication {
   name: string;
   axiosClient: Axios;
   axiosConfig?: AxiosRequestConfig;
   contextStorage?: AsyncLocalStorage<any>;
   errorHandler?: RequestErrorHandler;
+
+  private fallbackFunction = async (): Promise<string> => {
+    // This is the fallback logic you want to execute when the circuit is open or requests fail
+    // For instance, return a default value or perform an alternative action
+    return 'Fallback response'; // You can customize this response based on your use case
+  };
+  
+
   private circuitBreaker = new CircuitBreaker(this.makeRequest, {
     timeout: 5000, // Set a timeout for requests
     maxFailures: 3, // Maximum number of failures before opening the circuit
@@ -58,6 +66,7 @@ export default class HTTPCommunication {
     this.axiosClient = new Axios(this.axiosConfig);
     this.errorHandler = errorHandler;
     this.contextStorage = contextStorage;
+    this.circuitBreaker.fallback(this.fallbackFunction);
   }
 
   /**
@@ -249,7 +258,9 @@ export default class HTTPCommunication {
     return data;
   }
 
-  private async executeHTTPRequest(method: 'post' | 'get' | 'delete' | 'patch' | 'put', route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any> {
+  private  async executeHTTPRequest(method: 'post' | 'get' | 'delete' | 'patch' | 'put', route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any> {
     return this.circuitBreaker.fire({ method, route, request, headers });
   }
 }
+
+module.exports = HTTPCommunication;

@@ -1,7 +1,7 @@
-const HttpCommunication = require('../../src/http/index.js');
+const HttpCommunication = require('../../src/http/index');
 
 const Axios = require('axios');
-const QError = require('../../src/helpers/error.js');
+const QError = require('../../src/helpers/error.ts');
 
 jest.mock('axios');
 
