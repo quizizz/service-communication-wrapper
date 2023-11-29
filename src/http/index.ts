@@ -41,6 +41,14 @@ export default class HTTPCommunication {
   axiosConfig?: AxiosRequestConfig;
   contextStorage?: AsyncLocalStorage<any>;
   errorHandler?: RequestErrorHandler;
+
+  private fallbackFunction = async (): Promise<string> => {
+    // This is the fallback logic you want to execute when the circuit is open or requests fail
+    // For instance, return a default value or perform an alternative action
+    return 'Fallback response'; // You can customize this response based on your use case
+  };
+  
+
   private circuitBreaker = new CircuitBreaker(this.makeRequest, {
     timeout: 5000, // Set a timeout for requests
     maxFailures: 3, // Maximum number of failures before opening the circuit
@@ -74,6 +82,7 @@ export default class HTTPCommunication {
     this.axiosClient = new Axios(this.axiosConfig);
     this.errorHandler = errorHandler;
     this.contextStorage = contextStorage;
+    this.circuitBreaker.fallback(this.fallbackFunction);
   }
 
   /**
@@ -205,13 +214,8 @@ export default class HTTPCommunication {
    * HTTP POST Request
    */
   async post(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
-<<<<<<< HEAD
-    const data = await this.makeRequest({
-      method: METHOD.POST,
-=======
     const data = await this.executeHTTPRequest(
-      'post',
->>>>>>> 1c74910 (Adding circuit breaker)
+      METHOD.POST,
       route,
       request,
       headers,
@@ -223,13 +227,8 @@ export default class HTTPCommunication {
    * HTTP PUT Request
    */
   async put(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
-<<<<<<< HEAD
-    const data = await this.makeRequest({
-      method: METHOD.PUT,
-=======
     const data = await this.executeHTTPRequest(
-      'put',
->>>>>>> 1c74910 (Adding circuit breaker)
+      METHOD.PUT,
       route,
       request,
       headers,
@@ -242,13 +241,8 @@ export default class HTTPCommunication {
    * HTTP PATCH Request
    */
   async patch(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
-<<<<<<< HEAD
-    const data = await this.makeRequest({
-      method: METHOD.PATCH,
-=======
     const data = await this.executeHTTPRequest(
-      'patch',
->>>>>>> 1c74910 (Adding circuit breaker)
+      METHOD.PATCH,
       route,
       request,
       headers,
@@ -260,13 +254,8 @@ export default class HTTPCommunication {
    * HTTP DELETE Request
    */
   async delete(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
-<<<<<<< HEAD
-    const data = await this.makeRequest({
-      method: METHOD.DELETE,
-=======
     const data = await this.executeHTTPRequest(
-      'delete',
->>>>>>> 1c74910 (Adding circuit breaker)
+      METHOD.DELETE,
       route,
       request,
       headers,
@@ -278,13 +267,8 @@ export default class HTTPCommunication {
    * HTTP POST Request
    **/
   async get(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
-<<<<<<< HEAD
-    const data = await this.makeRequest({
-      method: METHOD.GET,
-=======
     const data = await this.executeHTTPRequest(
-      'get',
->>>>>>> 1c74910 (Adding circuit breaker)
+      METHOD.GET,
       route,
       request,
       headers,
@@ -292,7 +276,9 @@ export default class HTTPCommunication {
     return data;
   }
 
-  private async executeHTTPRequest(method: 'post' | 'get' | 'delete' | 'patch' | 'put', route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any> {
+  private  async executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any> {
     return this.circuitBreaker.fire({ method, route, request, headers });
   }
 }
+
+module.exports = HTTPCommunication;
