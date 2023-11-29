@@ -5,19 +5,35 @@ import crypto from 'node:crypto';
 import { AsyncLocalStorage } from 'node:async_hooks';
 
 export type RequestErrorHandler = (params: Record<string, any>, response: AxiosResponse) => void;
+export enum METHOD {
+  POST = 'post',
+  GET = 'get',
+  DELETE = 'delete',
+  PATCH = 'patch',
+  PUT = 'put',
+}
 
-interface Request {
+/**
+ * Request
+ */
+export interface Request {
   user?: {
     id?: string;
   };
   get(key: string): any;
 }
 
-interface HTTPRequest extends Record<string, any> {
+/**
+ * HTTPRequest is the structure of the incoming request
+ */
+export interface HTTPRequest extends Record<string, any> {
   body?: any;
   query?: string | Record<string, string> | string[][] | URLSearchParams | undefined;
 }
 
+/**
+ * HTTPCommunication wrapper
+ */
 export default class HTTPCommunication {
   name: string;
   axiosClient: Axios;
@@ -77,7 +93,10 @@ export default class HTTPCommunication {
     return crypto.randomBytes(size).toString("hex");
   }
 
-  handleError(params: Record<string, any>, response: AxiosResponse) {
+  /**
+   * handleError handles all errors
+   */
+  private handleError(params: Record<string, any>, response: AxiosResponse) {
     if (this.errorHandler) {
       this.errorHandler(params, response);
       return;
@@ -142,7 +161,7 @@ export default class HTTPCommunication {
    * makeRequest prepares and fires a request
    **/
   private async makeRequest(params: {
-    method: 'post' | 'get' | 'delete' | 'patch' | 'put',
+    method: METHOD,
     route: string,
     request?: HTTPRequest,
     headers?: AxiosRequestHeaders,
@@ -180,7 +199,7 @@ export default class HTTPCommunication {
    */
   async post(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
     const data = await this.makeRequest({
-      method: 'post',
+      method: METHOD.POST,
       route,
       request,
       headers,
@@ -193,7 +212,7 @@ export default class HTTPCommunication {
    */
   async put(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
     const data = await this.makeRequest({
-      method: 'put',
+      method: METHOD.PUT,
       route,
       request,
       headers,
@@ -207,7 +226,7 @@ export default class HTTPCommunication {
    */
   async patch(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
     const data = await this.makeRequest({
-      method: 'patch',
+      method: METHOD.PATCH,
       route,
       request,
       headers,
@@ -220,7 +239,7 @@ export default class HTTPCommunication {
    */
   async delete(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
     const data = await this.makeRequest({
-      method: 'delete',
+      method: METHOD.DELETE,
       route,
       request,
       headers,
@@ -228,13 +247,12 @@ export default class HTTPCommunication {
     return data;
   }
 
-
   /**
    * HTTP POST Request
    **/
   async get(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
     const data = await this.makeRequest({
-      method: 'get',
+      method: METHOD.GET,
       route,
       request,
       headers,
