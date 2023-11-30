@@ -1,7 +1,7 @@
 /**
  * @class QError
  */
-class QError extends Error {
+export default class QError extends Error {
   message: string;
   type: string;
   cause: any;
