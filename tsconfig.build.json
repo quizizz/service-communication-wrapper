@@ -1,9 +1,14 @@
 {
-    "extends": "./tsconfig.json",
-    "exclude": ["node_modules", "test", "dist", "**/*spec.ts"],
-    "compilerOptions": {
-      "sourceMap": true,
-      "sourceRoot": "/",
-      "inlineSourceMap": false
-    }
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "test",
+    "dist",
+    "**/*spec.ts"
+  ],
+  "compilerOptions": {
+    "sourceMap": true,
+    "sourceRoot": "/",
+    "inlineSourceMap": false
   }
+}
