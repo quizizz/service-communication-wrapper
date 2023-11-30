@@ -237,7 +237,7 @@ class HTTPCommunication {
   /**
    * HTTP POST Request
    */
-  async post(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
+  async post<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T> {
     const data = await this.executeHTTPRequest(
       METHOD.POST,
       route,
@@ -250,7 +250,7 @@ class HTTPCommunication {
   /**
    * HTTP PUT Request
    */
-  async put(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
+  async put<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T> {
     const data = await this.executeHTTPRequest(
       METHOD.PUT,
       route,
@@ -264,7 +264,7 @@ class HTTPCommunication {
   /**
    * HTTP PATCH Request
    */
-  async patch(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
+  async patch<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T> {
     const data = await this.executeHTTPRequest(
       METHOD.PATCH,
       route,
@@ -277,7 +277,7 @@ class HTTPCommunication {
   /**
    * HTTP DELETE Request
    */
-  async delete(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
+  async delete<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T> {
     const data = await this.executeHTTPRequest(
       METHOD.DELETE,
       route,
@@ -290,7 +290,7 @@ class HTTPCommunication {
   /**
    * HTTP POST Request
    **/
-  async get(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders) {
+  async get<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T> {
     const data = await this.executeHTTPRequest(
       METHOD.GET,
       route,
