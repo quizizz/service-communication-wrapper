@@ -5,8 +5,9 @@ import { performance } from 'node:perf_hooks';
 import crypto from 'node:crypto';
 import { AsyncLocalStorage } from 'node:async_hooks';
 
-export type RequestErrorHandler = (params: Record<string, any>, response: AxiosResponse) => void;
-export enum METHOD {
+type RequestErrorHandler = (params: Record<string, any>, response: AxiosResponse) => void;
+
+enum METHOD {
   POST = 'post',
   GET = 'get',
   DELETE = 'delete',
@@ -14,20 +15,46 @@ export enum METHOD {
   PUT = 'put',
 }
 
+interface CircuitBreakerConfig extends CircuitBreaker.Options {
+  disable?: boolean;
+}
+
+interface HTTPCommunicationConfig {
+  name: string;
+  axiosConfig?: AxiosRequestConfig;
+  contextStorage?: AsyncLocalStorage<any>;
+  errorHandler?: RequestErrorHandler;
+  circuitBreakerConfig?: CircuitBreakerConfig,
+}
+
+const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig = {
+  ...{ ...AxiosStatic.defaults, headers: undefined },
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  responseType: 'json', // default
+  validateStatus: (status: number): boolean => {
+    return status <= 504;
+  },
+};
+
 /**
  * Request
  */
-export interface Request {
+interface Request {
   user?: {
     id?: string;
   };
   get(key: string): any;
+  route?: {
+    path?: string;
+  };
 }
 
 /**
  * HTTPRequest is the structure of the incoming request
  */
-export interface HTTPRequest extends Record<string, any> {
+interface HTTPRequest extends Record<string, any> {
   body?: any;
   query?: string | Record<string, string> | string[][] | URLSearchParams | undefined;
 }
@@ -35,7 +62,7 @@ export interface HTTPRequest extends Record<string, any> {
 /**
  * HTTPCommunication wrapper
  */
-export default class HTTPCommunication {
+class HTTPCommunication {
   name: string;
   axiosClient: Axios;
   axiosConfig?: AxiosRequestConfig;
@@ -47,33 +74,20 @@ export default class HTTPCommunication {
     // For instance, return a default value or perform an alternative action
     return 'Fallback response'; // You can customize this response based on your use case
   };
-  
 
-  private circuitBreaker = new CircuitBreaker(this.makeRequest, {
-    timeout: 5000, // Set a timeout for requests
-    maxFailures: 3, // Maximum number of failures before opening the circuit
-    resetTimeout: 10000, // Time in milliseconds to wait before attempting to close the circuit
-    errorThresholdPercentage: 50, // Percentage of failed requests before opening the circuit
-  });
+
+  private circuitBreaker: CircuitBreaker | undefined;
 
   /**
    * HTTPCommunication to communicate with another service
    */
-  constructor({ name, axiosConfig, contextStorage, errorHandler }: { name: string, axiosConfig?: AxiosRequestConfig, contextStorage?: AsyncLocalStorage<any>, errorHandler?: RequestErrorHandler }) {
+  constructor({ name, axiosConfig, contextStorage, errorHandler, circuitBreakerConfig }: HTTPCommunicationConfig) {
     this.name = name;
+
     // default axios config
-    this.axiosConfig = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      responseType: 'json', // default
-      validateStatus: function (status) {
-        return status <= 504;
-      },
-    };
+    this.axiosConfig = HTTPCommunicationAxiosDefaultConfig;
     if (axiosConfig) {
       this.axiosConfig = {
-        ...{ ...AxiosStatic.defaults, headers: undefined },
         ...this.axiosConfig,
         ...axiosConfig,
       };
@@ -82,7 +96,15 @@ export default class HTTPCommunication {
     this.axiosClient = new Axios(this.axiosConfig);
     this.errorHandler = errorHandler;
     this.contextStorage = contextStorage;
-    this.circuitBreaker.fallback(this.fallbackFunction);
+    if (!circuitBreakerConfig?.disable) {
+      this.circuitBreaker = new CircuitBreaker(this.makeRequest, {
+        timeout: 5000, // Set a timeout for requests
+        resetTimeout: 10000, // Time in milliseconds to wait before attempting to close the circuit
+        errorThresholdPercentage: 50, // Percentage of failed requests before opening the circuit
+        ...circuitBreakerConfig,
+      });
+      this.circuitBreaker.fallback(this.fallbackFunction);
+    }
   }
 
   /**
@@ -91,7 +113,7 @@ export default class HTTPCommunication {
    * @param customContextValue any custom values that you want to store in the context
    * Return extracted values from the req headers and any custom values pass to generate the context object
    */
-  static getRequestContext(req: Request, customContextValue: Record<string, unknown>) {
+  static getRequestContext(req: Request, customContextValue?: Record<string, unknown>): Record<string, any> {
     const start = performance.now()
     return {
       traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : HTTPCommunication.generateHexString(16),
@@ -101,6 +123,7 @@ export default class HTTPCommunication {
       debug: req.get('x-q-debug'),
       requestContextToken: req.get('x-q-request-context-token'),
       reqStartTime: start,
+      path: req?.route?.path,
       ...customContextValue
     };
   }
@@ -120,6 +143,7 @@ export default class HTTPCommunication {
 
     const { method, route, request } = params;
     if (response.status >= 400) {
+      console.log({ error: response, params });
       if (response.data) {
         const { error, errorType = 'server.UKW' } = response.data;
         throw new QError(error, errorType, {
@@ -276,9 +300,22 @@ export default class HTTPCommunication {
     return data;
   }
 
-  private  async executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any> {
-    return this.circuitBreaker.fire({ method, route, request, headers });
+  async executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any> {
+    if (this.circuitBreaker) {
+      return this.circuitBreaker.fire({ method, route, request, headers });
+    }
+    return this.makeRequest({ method, route, request, headers });
   }
 }
 
-module.exports = HTTPCommunication;
+export {
+  HTTPRequest,
+  RequestErrorHandler,
+  CircuitBreakerConfig,
+  HTTPCommunicationConfig,
+  METHOD,
+  HTTPCommunicationAxiosDefaultConfig,
+  Request,
+  HTTPCommunication,
+  HTTPCommunication as HttpCommunication,
+};
