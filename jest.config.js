@@ -1,4 +1,4 @@
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
@@ -13,10 +13,14 @@ module.exports = {
   testMatch: ['**/tests/**'],
   json: true,
   reporters: ['jest-junit', 'default'],
-  globals: {
-    'ts-jest': {
+  verbose: true,
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', {
       isolatedModules: true,
-    },
+      diagnostics: {
+        ignoreCodes: ['TS151001']
+      }
+    }],
   },
   rootDir: './',
   moduleNameMapper: {
@@ -25,34 +29,5 @@ module.exports = {
   },
   maxWorkers: 4,
   maxConcurrency: 4,
-  coveragePathIgnorePatterns: [
-    '<rootDir>/src/bootstrap',
-    '<rootDir>/src/apps',
-    '<rootDir>/src/config',
-    '<rootDir>/src/core',
-    '<rootDir>/src/errors',
-    '<rootDir>/src/main.ts',
-    '<rootDir>/src/types.ts',
-    '<rootDir>/src/routes',
-    '<rootDir>/src/models',
-    '<rootDir>/src/utils',
-    '<rootDir>/src/domains/app.ts',
-    '<rootDir>/src/domains/user.ts',
-    '<rootDir>/src/middlewares',
-    '<rootDir>/src/controllers/404.controller.ts',
-    '<rootDir>/src/controllers/base.controller.ts',
-    '<rootDir>/src/controllers/factory.controller.ts',
-    '<rootDir>/src/controllers/http.controller.ts',
-    '<rootDir>/src/controllers/kafka.controller.ts',
-    '<rootDir>/src/controllers/meta.controller.ts',
-    '<rootDir>/src/controllers/index.ts',
-    '<rootDir>/src/controllers/helpers.ts',
-    '<rootDir>/src/domains/user',
-    '<rootDir>/src/domains/subscription',
-    '<rootDir>/src/domains/question/utils.ts',
-    '<rootDir>/src/helpers',
-    '<rootDir>/src/domains/question/structure/index.ts',
-    '<rootDir>/src/services/context-storage.service.ts',
-    '<rootDir>/src/static',
-  ],
+  coveragePathIgnorePatterns: [],
 };
