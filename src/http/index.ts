@@ -59,6 +59,17 @@ interface HTTPRequest extends Record<string, any> {
   query?: string | Record<string, string> | string[][] | URLSearchParams | undefined;
 }
 
+
+/**
+ * createRequestURL creates a url given query parameters
+ */
+function createRequestURL(url: string, query?: string | Record<string, string> | string[][] | URLSearchParams) {
+  const searchParams = new URLSearchParams(query);
+  const finalURL = new URL(url);
+  finalURL.search = searchParams.toString();
+  return finalURL.toString();
+}
+
 /**
  * HTTPCommunication wrapper
  */
@@ -68,12 +79,6 @@ class HTTPCommunication {
   axiosConfig?: AxiosRequestConfig;
   contextStorage?: AsyncLocalStorage<any>;
   errorHandler?: RequestErrorHandler;
-
-  private fallbackFunction = async (): Promise<string> => {
-    // This is the fallback logic you want to execute when the circuit is open or requests fail
-    // For instance, return a default value or perform an alternative action
-    return 'Fallback response'; // You can customize this response based on your use case
-  };
 
 
   private circuitBreaker: CircuitBreaker | undefined;
@@ -94,16 +99,16 @@ class HTTPCommunication {
     }
 
     this.axiosClient = new Axios(this.axiosConfig);
+
     this.errorHandler = errorHandler;
     this.contextStorage = contextStorage;
     if (!circuitBreakerConfig?.disable) {
-      this.circuitBreaker = new CircuitBreaker(this.makeRequest, {
+      this.circuitBreaker = new CircuitBreaker(this.makeRequest.bind(this), {
         timeout: 5000, // Set a timeout for requests
         resetTimeout: 10000, // Time in milliseconds to wait before attempting to close the circuit
-        errorThresholdPercentage: 50, // Percentage of failed requests before opening the circuit
+        errorThresholdPercentage: 90, // Percentage of failed requests before opening the circuit
         ...circuitBreakerConfig,
       });
-      this.circuitBreaker.fallback(this.fallbackFunction);
     }
   }
 
@@ -143,7 +148,6 @@ class HTTPCommunication {
 
     const { method, route, request } = params;
     if (response.status >= 400) {
-      console.log({ error: response, params });
       if (response.data) {
         const { error, errorType = 'server.UKW' } = response.data;
         throw new QError(error, errorType, {
@@ -168,16 +172,6 @@ class HTTPCommunication {
       }
       );
     }
-  }
-
-  /**
-   * createRequestURL creates a url given query parameters
-   */
-  createRequestURL(url: string, query?: string | Record<string, string> | string[][] | URLSearchParams) {
-    const searchParams = new URLSearchParams(query);
-    const finalURL = new URL(url);
-    finalURL.search = searchParams.toString();
-    return finalURL.toString();
   }
 
   /**
@@ -207,7 +201,7 @@ class HTTPCommunication {
     headers?: Record<string, string>,
   }) {
     const { route, method, request, headers = {} } = params;
-    const requestURL = this.createRequestURL(route, request?.query);
+    const requestURL = createRequestURL(route, request?.query);
     const requestContext = this.contextStorage ? this.contextStorage.getStore() : null;
     let finalHeaders = {};
 

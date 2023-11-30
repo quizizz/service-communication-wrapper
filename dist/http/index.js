@@ -56,6 +56,15 @@ const HTTPCommunicationAxiosDefaultConfig = Object.assign(Object.assign({}, Obje
     } });
 exports.HTTPCommunicationAxiosDefaultConfig = HTTPCommunicationAxiosDefaultConfig;
 /**
+ * createRequestURL creates a url given query parameters
+ */
+function createRequestURL(url, query) {
+    const searchParams = new URLSearchParams(query);
+    const finalURL = new URL(url);
+    finalURL.search = searchParams.toString();
+    return finalURL.toString();
+}
+/**
  * HTTPCommunication wrapper
  */
 class HTTPCommunication {
@@ -63,11 +72,6 @@ class HTTPCommunication {
      * HTTPCommunication to communicate with another service
      */
     constructor({ name, axiosConfig, contextStorage, errorHandler, circuitBreakerConfig }) {
-        this.fallbackFunction = () => __awaiter(this, void 0, void 0, function* () {
-            // This is the fallback logic you want to execute when the circuit is open or requests fail
-            // For instance, return a default value or perform an alternative action
-            return 'Fallback response'; // You can customize this response based on your use case
-        });
         this.name = name;
         // default axios config
         this.axiosConfig = HTTPCommunicationAxiosDefaultConfig;
@@ -75,11 +79,11 @@ class HTTPCommunication {
             this.axiosConfig = Object.assign(Object.assign({}, this.axiosConfig), axiosConfig);
         }
         this.axiosClient = new axios_1.Axios(this.axiosConfig);
+        console.log({ client: this.axiosClient });
         this.errorHandler = errorHandler;
         this.contextStorage = contextStorage;
         if (!(circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.disable)) {
-            this.circuitBreaker = new opossum_1.default(this.makeRequest, Object.assign({ timeout: 5000, resetTimeout: 10000, errorThresholdPercentage: 50 }, circuitBreakerConfig));
-            this.circuitBreaker.fallback(this.fallbackFunction);
+            this.circuitBreaker = new opossum_1.default(this.makeRequest.bind(this), Object.assign({ timeout: 5000, resetTimeout: 10000, errorThresholdPercentage: 50 }, circuitBreakerConfig));
         }
     }
     /**
@@ -131,15 +135,6 @@ class HTTPCommunication {
         }
     }
     /**
-     * createRequestURL creates a url given query parameters
-     */
-    createRequestURL(url, query) {
-        const searchParams = new URLSearchParams(query);
-        const finalURL = new URL(url);
-        finalURL.search = searchParams.toString();
-        return finalURL.toString();
-    }
-    /**
      * populateHeadersFromContext takes context provided from AsyncLocalStorage, and populates relevant headers
      */
     populateHeadersFromContext(ctx) {
@@ -165,7 +160,8 @@ class HTTPCommunication {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const { route, method, request, headers = {} } = params;
-            const requestURL = this.createRequestURL(route, request === null || request === void 0 ? void 0 : request.query);
+            console.log({ route, method, request, headers });
+            const requestURL = createRequestURL(route, request === null || request === void 0 ? void 0 : request.query);
             const requestContext = this.contextStorage ? this.contextStorage.getStore() : null;
             let finalHeaders = {};
             if (requestContext) {
@@ -178,6 +174,10 @@ class HTTPCommunication {
             };
             if (request === null || request === void 0 ? void 0 : request.body) {
                 req['data'] = request.body;
+            }
+            console.log({ client: this.axiosClient, req });
+            if (!this.axiosClient) {
+                console.log('\n\n\n\n');
             }
             const response = yield this.axiosClient.request(req);
             this.handleError(params, response);

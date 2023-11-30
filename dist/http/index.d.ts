@@ -49,7 +49,6 @@ declare class HTTPCommunication {
     axiosConfig?: AxiosRequestConfig;
     contextStorage?: AsyncLocalStorage<any>;
     errorHandler?: RequestErrorHandler;
-    private fallbackFunction;
     private circuitBreaker;
     /**
      * HTTPCommunication to communicate with another service
@@ -67,10 +66,6 @@ declare class HTTPCommunication {
      * handleError handles all errors
      */
     private handleError;
-    /**
-     * createRequestURL creates a url given query parameters
-     */
-    createRequestURL(url: string, query?: string | Record<string, string> | string[][] | URLSearchParams): string;
     /**
      * populateHeadersFromContext takes context provided from AsyncLocalStorage, and populates relevant headers
      */
