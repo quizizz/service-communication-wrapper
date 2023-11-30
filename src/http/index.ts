@@ -96,7 +96,7 @@ class HTTPCommunication {
     this.axiosClient = new Axios(this.axiosConfig);
     this.errorHandler = errorHandler;
     this.contextStorage = contextStorage;
-    if (!circuitBreakerConfig?.disable) {
+    if (!!circuitBreakerConfig?.disable) {
       this.circuitBreaker = new CircuitBreaker(this.makeRequest, {
         timeout: 5000, // Set a timeout for requests
         resetTimeout: 10000, // Time in milliseconds to wait before attempting to close the circuit

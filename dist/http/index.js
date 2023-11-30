@@ -77,7 +77,7 @@ class HTTPCommunication {
         this.axiosClient = new axios_1.Axios(this.axiosConfig);
         this.errorHandler = errorHandler;
         this.contextStorage = contextStorage;
-        if (!(circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.disable)) {
+        if (!!(circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.disable)) {
             this.circuitBreaker = new opossum_1.default(this.makeRequest, Object.assign({ timeout: 5000, resetTimeout: 10000, errorThresholdPercentage: 50 }, circuitBreakerConfig));
             this.circuitBreaker.fallback(this.fallbackFunction);
         }
