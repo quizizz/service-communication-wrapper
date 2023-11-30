@@ -1,249 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="16" failures="14" errors="0" time="1.076">
-  <testsuite name="Circuit Breaker Test" errors="0" failures="0" skipped="0" timestamp="2023-11-29T08:43:37" time="0.833" tests="2">
-    <testcase classname="Circuit Breaker Test Circuit opens after multiple failed requests" name="Circuit Breaker Test Circuit opens after multiple failed requests" time="0.006">
+<testsuites name="jest tests" tests="16" failures="0" errors="0" time="0.392">
+  <testsuite name="Circuit Breaker Test" errors="0" failures="0" skipped="0" timestamp="2023-11-30T04:46:12" time="0.25" tests="2">
+    <testcase classname="Circuit Breaker Test Circuit opens after multiple failed requests" name="Circuit Breaker Test Circuit opens after multiple failed requests" time="0.004">
     </testcase>
-    <testcase classname="Circuit Breaker Test Circuit closes after successful request" name="Circuit Breaker Test Circuit closes after successful request" time="0.001">
+    <testcase classname="Circuit Breaker Test Circuit closes after successful request" name="Circuit Breaker Test Circuit closes after successful request" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="HttpCommunication" errors="0" failures="14" skipped="0" timestamp="2023-11-29T08:43:38" time="0.151" tests="14">
-    <testcase classname="HttpCommunication Constructor should initialize with default values" name="HttpCommunication Constructor should initialize with default values" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+  <testsuite name="HttpCommunication" errors="0" failures="0" skipped="0" timestamp="2023-11-30T04:46:12" time="0.08" tests="14">
+    <testcase classname="HttpCommunication Constructor should initialize with default values" name="HttpCommunication Constructor should initialize with default values" time="0.002">
     </testcase>
-    <testcase classname="HttpCommunication Constructor should override axios config if provided" name="HttpCommunication Constructor should override axios config if provided" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    <testcase classname="HttpCommunication Constructor should override axios config if provided" name="HttpCommunication Constructor should override axios config if provided" time="0.001">
     </testcase>
-    <testcase classname="HttpCommunication getRequestContext should generate a request context from the request" name="HttpCommunication getRequestContext should generate a request context from the request" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    <testcase classname="HttpCommunication getRequestContext should generate a request context from the request" name="HttpCommunication getRequestContext should generate a request context from the request" time="0.003">
     </testcase>
-    <testcase classname="HttpCommunication getRequestContext should generate a request context even if route field is empty" name="HttpCommunication getRequestContext should generate a request context even if route field is empty" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    <testcase classname="HttpCommunication getRequestContext should generate a request context even if route field is empty" name="HttpCommunication getRequestContext should generate a request context even if route field is empty" time="0.001">
     </testcase>
-    <testcase classname="HttpCommunication generateHexString should generate a hex string of the specified size" name="HttpCommunication generateHexString should generate a hex string of the specified size" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    <testcase classname="HttpCommunication generateHexString should generate a hex string of the specified size" name="HttpCommunication generateHexString should generate a hex string of the specified size" time="0.001">
     </testcase>
-    <testcase classname="HttpCommunication handleError should throw QError if response status is &gt;= 400" name="HttpCommunication handleError should throw QError if response status is &gt;= 400" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    <testcase classname="HttpCommunication handleError should throw QError if response status is &gt;= 400" name="HttpCommunication handleError should throw QError if response status is &gt;= 400" time="0.005">
     </testcase>
     <testcase classname="HttpCommunication handleError should throw QError with default errorType if not provided" name="HttpCommunication handleError should throw QError with default errorType if not provided" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
     </testcase>
     <testcase classname="HttpCommunication handleError should throw QError with default message and errorType if response data is not provided" name="HttpCommunication handleError should throw QError with default message and errorType if response data is not provided" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
     </testcase>
     <testcase classname="HttpCommunication createRequestURL should create a URL with query parameters" name="HttpCommunication createRequestURL should create a URL with query parameters" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
     </testcase>
     <testcase classname="HttpCommunication populateHeadersFromContext should populate headers from the context" name="HttpCommunication populateHeadersFromContext should populate headers from the context" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
     </testcase>
-    <testcase classname="HttpCommunication populateHeadersFromContext should generate a traceId if not provided in the context" name="HttpCommunication populateHeadersFromContext should generate a traceId if not provided in the context" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    <testcase classname="HttpCommunication populateHeadersFromContext should generate a traceId if not provided in the context" name="HttpCommunication populateHeadersFromContext should generate a traceId if not provided in the context" time="0.001">
     </testcase>
     <testcase classname="HttpCommunication makeRequest should make a GET request and return data" name="HttpCommunication makeRequest should make a GET request and return data" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
     </testcase>
     <testcase classname="HttpCommunication makeRequest should handle errors correctly" name="HttpCommunication makeRequest should handle errors correctly" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
     </testcase>
-    <testcase classname="HttpCommunication HTTP Method Wrappers should make a POST request" name="HttpCommunication HTTP Method Wrappers should make a POST request" time="0">
-      <failure>TypeError: Axios.mockClear is not a function
-    at Object.&lt;anonymous&gt; (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/tests/http/HttpCommunication.test.js:42:11)
-    at Promise.then.completed (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (&lt;anonymous&gt;)
-    at callAsyncCircusFn (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusHook (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:281:40)
-    at _runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:246:5)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:126:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at _runTestsForDescribeBlock (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:121:9)
-    at run (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/run.js:71:3)
-    at runAndTransformResultsToJestFormat (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at jestAdapter (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at runTestInternal (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:367:16)
-    at runTest (/Users/arpitadlakha/QuizizzProjects/temp/service-communication-wrapper/node_modules/jest-runner/build/runTest.js:444:34)</failure>
+    <testcase classname="HttpCommunication HTTP Method Wrappers should make a POST request" name="HttpCommunication HTTP Method Wrappers should make a POST request" time="0.001">
     </testcase>
   </testsuite>
 </testsuites>
