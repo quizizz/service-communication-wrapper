@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import CircuitBreaker from 'opossum';
-import { Axios, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios';
+import { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { AsyncLocalStorage } from 'node:async_hooks';
 type RequestErrorHandler = (params: Record<string, any>, response: AxiosResponse) => void;
 declare enum METHOD {
@@ -88,23 +88,23 @@ declare class HTTPCommunication {
     /**
      * HTTP POST Request
      */
-    post<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T>;
+    post<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
     /**
      * HTTP PUT Request
      */
-    put<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T>;
+    put<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
     /**
      * HTTP PATCH Request
      */
-    patch<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T>;
+    patch<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
     /**
      * HTTP DELETE Request
      */
-    delete<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T>;
+    delete<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
     /**
      * HTTP POST Request
      **/
-    get<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T>;
-    executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any>;
+    get<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
+    executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<any>;
 }
 export { HTTPRequest, RequestErrorHandler, CircuitBreakerConfig, HTTPCommunicationConfig, METHOD, HTTPCommunicationAxiosDefaultConfig, Request, HTTPCommunication, HTTPCommunication as HttpCommunication, };

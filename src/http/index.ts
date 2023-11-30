@@ -1,6 +1,6 @@
 import CircuitBreaker from 'opossum';
 import QError from '../helpers/error';
-import AxiosStatic, { Axios, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from 'axios';
+import AxiosStatic, { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { performance } from 'node:perf_hooks';
 import crypto from 'node:crypto';
 import { AsyncLocalStorage } from 'node:async_hooks';
@@ -204,7 +204,7 @@ class HTTPCommunication {
     method: METHOD,
     route: string,
     request?: HTTPRequest,
-    headers?: AxiosRequestHeaders,
+    headers?: Record<string, string>,
   }) {
     const { route, method, request, headers = {} } = params;
     const requestURL = this.createRequestURL(route, request?.query);
@@ -219,7 +219,7 @@ class HTTPCommunication {
       };
     }
 
-    const req: { method: string; url: string; headers: Record<string, string>; data?: any } = {
+    const req: AxiosRequestConfig = {
       method,
       url: requestURL,
       headers: finalHeaders,
@@ -237,7 +237,7 @@ class HTTPCommunication {
   /**
    * HTTP POST Request
    */
-  async post<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T> {
+  async post<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T> {
     const data = await this.executeHTTPRequest(
       METHOD.POST,
       route,
@@ -250,7 +250,7 @@ class HTTPCommunication {
   /**
    * HTTP PUT Request
    */
-  async put<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T> {
+  async put<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T> {
     const data = await this.executeHTTPRequest(
       METHOD.PUT,
       route,
@@ -264,7 +264,7 @@ class HTTPCommunication {
   /**
    * HTTP PATCH Request
    */
-  async patch<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T> {
+  async patch<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T> {
     const data = await this.executeHTTPRequest(
       METHOD.PATCH,
       route,
@@ -277,7 +277,7 @@ class HTTPCommunication {
   /**
    * HTTP DELETE Request
    */
-  async delete<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T> {
+  async delete<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T> {
     const data = await this.executeHTTPRequest(
       METHOD.DELETE,
       route,
@@ -290,7 +290,7 @@ class HTTPCommunication {
   /**
    * HTTP POST Request
    **/
-  async get<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T> {
+  async get<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T> {
     const data = await this.executeHTTPRequest(
       METHOD.GET,
       route,
@@ -300,7 +300,7 @@ class HTTPCommunication {
     return data;
   }
 
-  async executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any> {
+  async executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<any> {
     if (this.circuitBreaker) {
       return this.circuitBreaker.fire({ method, route, request, headers });
     }
