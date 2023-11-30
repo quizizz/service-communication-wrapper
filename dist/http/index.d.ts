@@ -88,23 +88,23 @@ declare class HTTPCommunication {
     /**
      * HTTP POST Request
      */
-    post(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any>;
+    post<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T>;
     /**
      * HTTP PUT Request
      */
-    put(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any>;
+    put<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T>;
     /**
      * HTTP PATCH Request
      */
-    patch(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any>;
+    patch<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T>;
     /**
      * HTTP DELETE Request
      */
-    delete(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any>;
+    delete<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T>;
     /**
      * HTTP POST Request
      **/
-    get(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any>;
+    get<T>(route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<T>;
     executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: AxiosRequestHeaders): Promise<any>;
 }
 export { HTTPRequest, RequestErrorHandler, CircuitBreakerConfig, HTTPCommunicationConfig, METHOD, HTTPCommunicationAxiosDefaultConfig, Request, HTTPCommunication, HTTPCommunication as HttpCommunication, };
