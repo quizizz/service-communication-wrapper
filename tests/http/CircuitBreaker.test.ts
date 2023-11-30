@@ -1,4 +1,4 @@
-import HTTPCommunication from '../../src/http/index';
+import { HTTPCommunication } from '../../src/http/index';
 
 describe('Circuit Breaker Test', () => {
   let httpCommunication: HTTPCommunication;
