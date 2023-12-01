@@ -41,9 +41,6 @@ describe('HttpCommunication', () => {
 		httpComm = new HTTPCommunication({
 			name: 'TestService',
 			contextStorage: mockContextStorage,
-			circuitBreakerConfig: {
-				disable: true,
-			}
 		});
 
 		Axios.mockClear();
