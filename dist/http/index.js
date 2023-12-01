@@ -58,15 +58,22 @@ const HTTPCommunicationAxiosDefaultConfig = Object.assign(Object.assign({}, Obje
     } });
 exports.HTTPCommunicationAxiosDefaultConfig = HTTPCommunicationAxiosDefaultConfig;
 class CircuitOpenError extends Error {
-    constructor() {
+    constructor(args) {
         super('circuit open');
+        this.method = args.method;
+        this.route = args.route;
+        this.request = args.request;
+        this.headers = args.headers;
     }
 }
 exports.CircuitOpenError = CircuitOpenError;
-const CircuitBreakerDefaultFallbackFunction = () => __awaiter(void 0, void 0, void 0, function* () {
+const CircuitBreakerDefaultFallbackFunction = (req, error) => __awaiter(void 0, void 0, void 0, function* () {
     // This is the fallback logic you want to execute when the circuit is open or requests fail
     // For instance, return a default value or perform an alternative action
-    throw new CircuitOpenError();
+    if ((error === null || error === void 0 ? void 0 : error.message) === 'Breaker is open') {
+        throw new CircuitOpenError(req);
+    }
+    throw error;
 });
 exports.CircuitBreakerDefaultFallbackFunction = CircuitBreakerDefaultFallbackFunction;
 /**

@@ -19,6 +19,14 @@ enum METHOD {
   PUT = 'put',
 }
 
+type CircuitBreakerFallbackMethod = (request: {
+  method: METHOD;
+  route: string;
+  request: Request;
+  headers: Record<string, any>;
+},
+  error?: Error) => void;
+
 interface HTTPCommunicationConfig {
   name: string;
   axiosConfig?: AxiosRequestConfig;
@@ -28,7 +36,7 @@ interface HTTPCommunicationConfig {
     options?: CircuitBreaker.Options;
     disable?: boolean;
     metricsRegistry?: Registry;
-    fallbackFunction?: () => void;
+    fallbackFunction?: CircuitBreakerFallbackMethod;
   }
 }
 
@@ -44,15 +52,32 @@ const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig = {
 };
 
 class CircuitOpenError extends Error {
-  constructor() {
+  method: METHOD;
+  route: string;
+  request: Request;
+  headers: Record<string, any>;
+
+  constructor(args: {
+    method: METHOD,
+    route: string;
+    request: any;
+    headers: Record<string, any>;
+  }) {
     super('circuit open');
+    this.method = args.method;
+    this.route = args.route;
+    this.request = args.request;
+    this.headers = args.headers;
   }
 }
 
-const CircuitBreakerDefaultFallbackFunction = async (): Promise<string> => {
+const CircuitBreakerDefaultFallbackFunction: CircuitBreakerFallbackMethod = async (req, error): Promise<string> => {
   // This is the fallback logic you want to execute when the circuit is open or requests fail
   // For instance, return a default value or perform an alternative action
-  throw new CircuitOpenError();
+  if (error?.message === 'Breaker is open') {
+    throw new CircuitOpenError(req);
+  }
+  throw error;
 };
 
 /**

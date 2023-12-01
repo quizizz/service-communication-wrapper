@@ -12,6 +12,12 @@ declare enum METHOD {
     PATCH = "patch",
     PUT = "put"
 }
+type CircuitBreakerFallbackMethod = (request: {
+    method: METHOD;
+    route: string;
+    request: Request;
+    headers: Record<string, any>;
+}, error?: Error) => void;
 interface HTTPCommunicationConfig {
     name: string;
     axiosConfig?: AxiosRequestConfig;
@@ -21,14 +27,23 @@ interface HTTPCommunicationConfig {
         options?: CircuitBreaker.Options;
         disable?: boolean;
         metricsRegistry?: Registry;
-        fallbackFunction?: () => void;
+        fallbackFunction?: CircuitBreakerFallbackMethod;
     };
 }
 declare const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig;
 declare class CircuitOpenError extends Error {
-    constructor();
+    method: METHOD;
+    route: string;
+    request: Request;
+    headers: Record<string, any>;
+    constructor(args: {
+        method: METHOD;
+        route: string;
+        request: any;
+        headers: Record<string, any>;
+    });
 }
-declare const CircuitBreakerDefaultFallbackFunction: () => Promise<string>;
+declare const CircuitBreakerDefaultFallbackFunction: CircuitBreakerFallbackMethod;
 /**
  * Request
  */
