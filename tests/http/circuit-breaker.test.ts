@@ -1,4 +1,4 @@
-import { HTTPCommunication } from '../../src/http/index';
+import { CircuitOpenError, HTTPCommunication } from '../../src/http/index';
 
 describe('Circuit Breaker Test', () => {
   let httpCommunication: HTTPCommunication;
@@ -52,7 +52,7 @@ describe('Circuit Breaker Test', () => {
       await httpCommunication.get('/test-route');
     } catch (error) {
       // Expected behavior: Fallback response should be returned due to the open circuit
-      expect(error).toBe('Fallback response');
+      expect(error instanceof CircuitOpenError).toBe(true);
     }
 
     // Check if the 'get' method was called three times

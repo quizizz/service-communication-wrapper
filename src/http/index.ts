@@ -43,13 +43,13 @@ const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig = {
   },
 };
 
-export class CircuitOpenError extends Error {
+class CircuitOpenError extends Error {
   constructor() {
     super('circuit open');
   }
 }
 
-export const CircuitBreakerDefaultFallbackFunction = async (): Promise<string> => {
+const CircuitBreakerDefaultFallbackFunction = async (): Promise<string> => {
   // This is the fallback logic you want to execute when the circuit is open or requests fail
   // For instance, return a default value or perform an alternative action
   throw new CircuitOpenError();
@@ -324,6 +324,9 @@ class HTTPCommunication {
 }
 
 export {
+  CircuitOpenError,
+  CircuitBreakerDefaultFallbackFunction,
+  createRequestURL,
   HTTPRequest,
   RequestErrorHandler,
   HTTPCommunicationConfig,

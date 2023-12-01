@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HttpCommunication = exports.HTTPCommunication = exports.HTTPCommunicationAxiosDefaultConfig = exports.METHOD = exports.CircuitBreakerDefaultFallbackFunction = exports.CircuitOpenError = void 0;
+exports.HttpCommunication = exports.HTTPCommunication = exports.HTTPCommunicationAxiosDefaultConfig = exports.METHOD = exports.createRequestURL = exports.CircuitBreakerDefaultFallbackFunction = exports.CircuitOpenError = void 0;
 const opossum_1 = __importDefault(require("opossum"));
 const error_1 = __importDefault(require("../helpers/error"));
 const axios_1 = __importStar(require("axios"));
@@ -78,6 +78,7 @@ function createRequestURL(url, query) {
     finalURL.search = searchParams.toString();
     return finalURL.toString();
 }
+exports.createRequestURL = createRequestURL;
 /**
  * HTTPCommunication wrapper
  */
@@ -98,7 +99,7 @@ class HTTPCommunication {
         this.contextStorage = contextStorage;
         if (!(circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.disable)) {
             this.circuitBreaker = new opossum_1.default(this.makeRequest.bind(this), Object.assign({ timeout: 5000, resetTimeout: 10000, errorThresholdPercentage: 90 }, circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.options));
-            this.circuitBreaker.fallback((_a = circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.fallbackFunction) !== null && _a !== void 0 ? _a : exports.CircuitBreakerDefaultFallbackFunction);
+            this.circuitBreaker.fallback((_a = circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.fallbackFunction) !== null && _a !== void 0 ? _a : CircuitBreakerDefaultFallbackFunction);
             if (circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.metricsRegistry) {
                 this.metrics = new opossum_prometheus_1.default({ circuits: [this.circuitBreaker], registry: circuitBreakerConfig.metricsRegistry });
             }

@@ -1,6 +1,6 @@
 /** @type {import('@types/jest')} */
 
-import { HTTPCommunication, HTTPCommunicationAxiosDefaultConfig, METHOD } from '../../src/';
+import { HTTPCommunication, HTTPCommunicationAxiosDefaultConfig, METHOD, createRequestURL } from '../../src/';
 
 import Axios from 'axios';
 import QError from '../../src/helpers/error.ts';
@@ -210,7 +210,7 @@ describe('HttpCommunication', () => {
 		it('should create a URL with query parameters', () => {
 			const url = 'http://localhost/test';
 			const query = { param1: 'value1', param2: 'value2' };
-			const result = httpComm.createRequestURL(url, query);
+			const result = createRequestURL(url, query);
 			expect(result).toBe('http://localhost/test?param1=value1&param2=value2');
 		});
 	});

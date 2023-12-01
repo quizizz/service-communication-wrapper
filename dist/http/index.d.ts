@@ -25,10 +25,10 @@ interface HTTPCommunicationConfig {
     };
 }
 declare const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig;
-export declare class CircuitOpenError extends Error {
+declare class CircuitOpenError extends Error {
     constructor();
 }
-export declare const CircuitBreakerDefaultFallbackFunction: () => Promise<string>;
+declare const CircuitBreakerDefaultFallbackFunction: () => Promise<string>;
 /**
  * Request
  */
@@ -48,6 +48,10 @@ interface HTTPRequest extends Record<string, any> {
     body?: any;
     query?: string | Record<string, string> | string[][] | URLSearchParams | undefined;
 }
+/**
+ * createRequestURL creates a url given query parameters
+ */
+declare function createRequestURL(url: string, query?: string | Record<string, string> | string[][] | URLSearchParams): string;
 /**
  * HTTPCommunication wrapper
  */
@@ -111,4 +115,4 @@ declare class HTTPCommunication {
     get<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
     executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<any>;
 }
-export { HTTPRequest, RequestErrorHandler, HTTPCommunicationConfig, METHOD, HTTPCommunicationAxiosDefaultConfig, Request, HTTPCommunication, HTTPCommunication as HttpCommunication, };
+export { CircuitOpenError, CircuitBreakerDefaultFallbackFunction, createRequestURL, HTTPRequest, RequestErrorHandler, HTTPCommunicationConfig, METHOD, HTTPCommunicationAxiosDefaultConfig, Request, HTTPCommunication, HTTPCommunication as HttpCommunication, };
