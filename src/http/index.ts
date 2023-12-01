@@ -4,6 +4,10 @@ import AxiosStatic, { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { performance } from 'node:perf_hooks';
 import crypto from 'node:crypto';
 import { AsyncLocalStorage } from 'node:async_hooks';
+// @ts-ignore
+import PrometheusMetrics from 'opossum-prometheus';
+import { Registry } from 'prom-client';
+
 
 type RequestErrorHandler = (params: Record<string, any>, response: AxiosResponse) => void;
 
@@ -15,16 +19,17 @@ enum METHOD {
   PUT = 'put',
 }
 
-interface CircuitBreakerConfig extends CircuitBreaker.Options {
-  disable?: boolean;
-}
-
 interface HTTPCommunicationConfig {
   name: string;
   axiosConfig?: AxiosRequestConfig;
   contextStorage?: AsyncLocalStorage<any>;
   errorHandler?: RequestErrorHandler;
-  circuitBreakerConfig?: CircuitBreakerConfig,
+  circuitBreakerConfig?: {
+    options?: CircuitBreaker.Options;
+    disable?: boolean;
+    metricsRegistry?: Registry;
+    fallbackFunction?: () => void;
+  }
 }
 
 const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig = {
@@ -36,6 +41,18 @@ const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig = {
   validateStatus: (status: number): boolean => {
     return status <= 504;
   },
+};
+
+export class CircuitOpenError extends Error {
+  constructor() {
+    super('circuit open');
+  }
+}
+
+export const CircuitBreakerDefaultFallbackFunction = async (): Promise<string> => {
+  // This is the fallback logic you want to execute when the circuit is open or requests fail
+  // For instance, return a default value or perform an alternative action
+  throw new CircuitOpenError();
 };
 
 /**
@@ -79,7 +96,7 @@ class HTTPCommunication {
   axiosConfig?: AxiosRequestConfig;
   contextStorage?: AsyncLocalStorage<any>;
   errorHandler?: RequestErrorHandler;
-
+  metrics?: PrometheusMetrics;
 
   private circuitBreaker: CircuitBreaker | undefined;
 
@@ -107,8 +124,12 @@ class HTTPCommunication {
         timeout: 5000, // Set a timeout for requests
         resetTimeout: 10000, // Time in milliseconds to wait before attempting to close the circuit
         errorThresholdPercentage: 90, // Percentage of failed requests before opening the circuit
-        ...circuitBreakerConfig,
+        ...circuitBreakerConfig?.options,
       });
+      this.circuitBreaker.fallback(circuitBreakerConfig?.fallbackFunction ?? CircuitBreakerDefaultFallbackFunction);
+      if (circuitBreakerConfig?.metricsRegistry) {
+        this.metrics = new PrometheusMetrics({ circuits: [this.circuitBreaker], registry: circuitBreakerConfig.metricsRegistry });
+      }
     }
   }
 
@@ -305,7 +326,6 @@ class HTTPCommunication {
 export {
   HTTPRequest,
   RequestErrorHandler,
-  CircuitBreakerConfig,
   HTTPCommunicationConfig,
   METHOD,
   HTTPCommunicationAxiosDefaultConfig,

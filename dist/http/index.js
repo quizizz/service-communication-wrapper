@@ -35,12 +35,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HttpCommunication = exports.HTTPCommunication = exports.HTTPCommunicationAxiosDefaultConfig = exports.METHOD = void 0;
+exports.HttpCommunication = exports.HTTPCommunication = exports.HTTPCommunicationAxiosDefaultConfig = exports.METHOD = exports.CircuitBreakerDefaultFallbackFunction = exports.CircuitOpenError = void 0;
 const opossum_1 = __importDefault(require("opossum"));
 const error_1 = __importDefault(require("../helpers/error"));
 const axios_1 = __importStar(require("axios"));
 const node_perf_hooks_1 = require("node:perf_hooks");
 const node_crypto_1 = __importDefault(require("node:crypto"));
+// @ts-ignore
+const opossum_prometheus_1 = __importDefault(require("opossum-prometheus"));
 var METHOD;
 (function (METHOD) {
     METHOD["POST"] = "post";
@@ -55,6 +57,18 @@ const HTTPCommunicationAxiosDefaultConfig = Object.assign(Object.assign({}, Obje
         return status <= 504;
     } });
 exports.HTTPCommunicationAxiosDefaultConfig = HTTPCommunicationAxiosDefaultConfig;
+class CircuitOpenError extends Error {
+    constructor() {
+        super('circuit open');
+    }
+}
+exports.CircuitOpenError = CircuitOpenError;
+const CircuitBreakerDefaultFallbackFunction = () => __awaiter(void 0, void 0, void 0, function* () {
+    // This is the fallback logic you want to execute when the circuit is open or requests fail
+    // For instance, return a default value or perform an alternative action
+    throw new CircuitOpenError();
+});
+exports.CircuitBreakerDefaultFallbackFunction = CircuitBreakerDefaultFallbackFunction;
 /**
  * createRequestURL creates a url given query parameters
  */
@@ -72,6 +86,7 @@ class HTTPCommunication {
      * HTTPCommunication to communicate with another service
      */
     constructor({ name, axiosConfig, contextStorage, errorHandler, circuitBreakerConfig }) {
+        var _a;
         this.name = name;
         // default axios config
         this.axiosConfig = HTTPCommunicationAxiosDefaultConfig;
@@ -79,11 +94,14 @@ class HTTPCommunication {
             this.axiosConfig = Object.assign(Object.assign({}, this.axiosConfig), axiosConfig);
         }
         this.axiosClient = new axios_1.Axios(this.axiosConfig);
-        console.log({ client: this.axiosClient });
         this.errorHandler = errorHandler;
         this.contextStorage = contextStorage;
         if (!(circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.disable)) {
-            this.circuitBreaker = new opossum_1.default(this.makeRequest.bind(this), Object.assign({ timeout: 5000, resetTimeout: 10000, errorThresholdPercentage: 50 }, circuitBreakerConfig));
+            this.circuitBreaker = new opossum_1.default(this.makeRequest.bind(this), Object.assign({ timeout: 5000, resetTimeout: 10000, errorThresholdPercentage: 90 }, circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.options));
+            this.circuitBreaker.fallback((_a = circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.fallbackFunction) !== null && _a !== void 0 ? _a : exports.CircuitBreakerDefaultFallbackFunction);
+            if (circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.metricsRegistry) {
+                this.metrics = new opossum_prometheus_1.default({ circuits: [this.circuitBreaker], registry: circuitBreakerConfig.metricsRegistry });
+            }
         }
     }
     /**
@@ -110,7 +128,6 @@ class HTTPCommunication {
         }
         const { method, route, request } = params;
         if (response.status >= 400) {
-            console.log({ error: response, params });
             if (response.data) {
                 const { error, errorType = 'server.UKW' } = response.data;
                 throw new error_1.default(error, errorType, {
@@ -160,7 +177,6 @@ class HTTPCommunication {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const { route, method, request, headers = {} } = params;
-            console.log({ route, method, request, headers });
             const requestURL = createRequestURL(route, request === null || request === void 0 ? void 0 : request.query);
             const requestContext = this.contextStorage ? this.contextStorage.getStore() : null;
             let finalHeaders = {};
@@ -174,10 +190,6 @@ class HTTPCommunication {
             };
             if (request === null || request === void 0 ? void 0 : request.body) {
                 req['data'] = request.body;
-            }
-            console.log({ client: this.axiosClient, req });
-            if (!this.axiosClient) {
-                console.log('\n\n\n\n');
             }
             const response = yield this.axiosClient.request(req);
             this.handleError(params, response);

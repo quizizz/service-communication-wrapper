@@ -2,6 +2,8 @@
 import CircuitBreaker from 'opossum';
 import { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { AsyncLocalStorage } from 'node:async_hooks';
+import PrometheusMetrics from 'opossum-prometheus';
+import { Registry } from 'prom-client';
 type RequestErrorHandler = (params: Record<string, any>, response: AxiosResponse) => void;
 declare enum METHOD {
     POST = "post",
@@ -10,17 +12,23 @@ declare enum METHOD {
     PATCH = "patch",
     PUT = "put"
 }
-interface CircuitBreakerConfig extends CircuitBreaker.Options {
-    disable?: boolean;
-}
 interface HTTPCommunicationConfig {
     name: string;
     axiosConfig?: AxiosRequestConfig;
     contextStorage?: AsyncLocalStorage<any>;
     errorHandler?: RequestErrorHandler;
-    circuitBreakerConfig?: CircuitBreakerConfig;
+    circuitBreakerConfig?: {
+        options?: CircuitBreaker.Options;
+        disable?: boolean;
+        metricsRegistry?: Registry;
+        fallbackFunction?: () => void;
+    };
 }
 declare const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig;
+export declare class CircuitOpenError extends Error {
+    constructor();
+}
+export declare const CircuitBreakerDefaultFallbackFunction: () => Promise<string>;
 /**
  * Request
  */
@@ -49,6 +57,7 @@ declare class HTTPCommunication {
     axiosConfig?: AxiosRequestConfig;
     contextStorage?: AsyncLocalStorage<any>;
     errorHandler?: RequestErrorHandler;
+    metrics?: PrometheusMetrics;
     private circuitBreaker;
     /**
      * HTTPCommunication to communicate with another service
@@ -102,4 +111,4 @@ declare class HTTPCommunication {
     get<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
     executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<any>;
 }
-export { HTTPRequest, RequestErrorHandler, CircuitBreakerConfig, HTTPCommunicationConfig, METHOD, HTTPCommunicationAxiosDefaultConfig, Request, HTTPCommunication, HTTPCommunication as HttpCommunication, };
+export { HTTPRequest, RequestErrorHandler, HTTPCommunicationConfig, METHOD, HTTPCommunicationAxiosDefaultConfig, Request, HTTPCommunication, HTTPCommunication as HttpCommunication, };
