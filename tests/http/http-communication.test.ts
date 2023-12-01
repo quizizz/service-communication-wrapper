@@ -149,7 +149,6 @@ describe('HttpCommunication', () => {
 				httpComm.handleError(params, response);
 				fail('handleError did not throw an error');
 			} catch (err) {
-
 				expect(err).toBeInstanceOf(QError);
 				expect(err.message).toBe('Bad Request');
 				expect(err.type).toBe('client.BAD_REQUEST');

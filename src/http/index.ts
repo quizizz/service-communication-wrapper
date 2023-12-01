@@ -51,6 +51,17 @@ const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig = {
   },
 };
 
+interface DefaultContextValue {
+  traceId: string;
+  spanId: string;
+  reqStartTime: number;
+  userId?: string;
+  ab: string;
+  debug?: string;
+  requestContextToken?: string;
+  path?: string,
+}
+
 class CircuitOpenError extends Error {
   method: METHOD;
   route: string;
@@ -144,6 +155,7 @@ class HTTPCommunication {
 
     this.errorHandler = errorHandler;
     this.contextStorage = contextStorage;
+
     if (!circuitBreakerConfig?.disable) {
       this.circuitBreaker = new CircuitBreaker(this.makeRequest.bind(this), {
         timeout: 5000, // Set a timeout for requests
@@ -151,6 +163,7 @@ class HTTPCommunication {
         errorThresholdPercentage: 90, // Percentage of failed requests before opening the circuit
         ...circuitBreakerConfig?.options,
       });
+
       this.circuitBreaker.fallback(circuitBreakerConfig?.fallbackFunction ?? CircuitBreakerDefaultFallbackFunction);
       if (circuitBreakerConfig?.metricsRegistry) {
         this.metrics = new PrometheusMetrics({ circuits: [this.circuitBreaker], registry: circuitBreakerConfig.metricsRegistry });
@@ -164,19 +177,19 @@ class HTTPCommunication {
    * @param customContextValue any custom values that you want to store in the context
    * Return extracted values from the req headers and any custom values pass to generate the context object
    */
-  static getRequestContext(req: Request, customContextValue?: Record<string, unknown>): Record<string, any> {
+  static getRequestContext<T>(req: Request, customContextValue?: T): DefaultContextValue & T {
     const start = performance.now()
     return {
+      reqStartTime: start,
       traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : HTTPCommunication.generateHexString(16),
       spanId: HTTPCommunication.generateHexString(8),
       userId: (req?.user?.id) ? String(req.user.id) : req.get('x-q-userid'),
       ab: req.get('x-q-ab-route'),
       debug: req.get('x-q-debug'),
       requestContextToken: req.get('x-q-request-context-token'),
-      reqStartTime: start,
       path: req?.route?.path,
       ...customContextValue
-    };
+    } as DefaultContextValue & T;
   }
 
   static generateHexString(size: number): string {
@@ -238,9 +251,9 @@ class HTTPCommunication {
 
 
   /**
-   * makeRequest prepares and fires a request
+   * makeRequest prepares and fires a request. It will not honour circuit breaker.
    **/
-  private async makeRequest(params: {
+  async makeRequest(params: {
     method: METHOD,
     route: string,
     request?: HTTPRequest,

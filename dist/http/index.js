@@ -121,7 +121,7 @@ class HTTPCommunication {
     static getRequestContext(req, customContextValue) {
         var _a, _b;
         const start = node_perf_hooks_1.performance.now();
-        return Object.assign({ traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : HTTPCommunication.generateHexString(16), spanId: HTTPCommunication.generateHexString(8), userId: ((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id) ? String(req.user.id) : req.get('x-q-userid'), ab: req.get('x-q-ab-route'), debug: req.get('x-q-debug'), requestContextToken: req.get('x-q-request-context-token'), reqStartTime: start, path: (_b = req === null || req === void 0 ? void 0 : req.route) === null || _b === void 0 ? void 0 : _b.path }, customContextValue);
+        return Object.assign({ reqStartTime: start, traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : HTTPCommunication.generateHexString(16), spanId: HTTPCommunication.generateHexString(8), userId: ((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id) ? String(req.user.id) : req.get('x-q-userid'), ab: req.get('x-q-ab-route'), debug: req.get('x-q-debug'), requestContextToken: req.get('x-q-request-context-token'), path: (_b = req === null || req === void 0 ? void 0 : req.route) === null || _b === void 0 ? void 0 : _b.path }, customContextValue);
     }
     static generateHexString(size) {
         return node_crypto_1.default.randomBytes(size).toString("hex");
@@ -179,7 +179,7 @@ class HTTPCommunication {
         return customHeaders;
     }
     /**
-     * makeRequest prepares and fires a request
+     * makeRequest prepares and fires a request. It will not honour circuit breaker.
      **/
     makeRequest(params) {
         var _a;

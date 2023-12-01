@@ -1,13 +1,18 @@
 import { CircuitOpenError, HTTPCommunication } from '../../src/http/index';
+const makeURL = (route: string) => `http://localhost:8000${route}`;
+
+jest.mock('axios');
 
 describe('Circuit Breaker Test', () => {
-  let httpCommunication: HTTPCommunication;
-
-  beforeEach(() => {
-    // Create a new instance of HTTPCommunication for each test
-    httpCommunication = new HTTPCommunication({
-      name: 'TestService',
-    });
+  // Create a new instance of HTTPCommunication for each test
+  const httpCommunication = new HTTPCommunication({
+    name: 'TestService',
+    circuitBreakerConfig: {
+      disable: false,
+      options: {
+        resetTimeout: 1_000,
+      }
+    }
   });
 
   afterEach(() => {
@@ -15,58 +20,53 @@ describe('Circuit Breaker Test', () => {
     jest.restoreAllMocks();
   });
 
-  test('Circuit opens after multiple failed requests', async () => {
-    // Mock the potentially unreliable HTTP request to always fail
-    jest.spyOn(httpCommunication, 'get')
-      .mockRejectedValueOnce(new Error('Fake error 1'))
-      .mockRejectedValueOnce(new Error('Fake error 2'))
-      .mockRejectedValueOnce(new Error('Fake error 3'));
+  let numberOfRequests = 0;
+  let failStart: number;
 
-    // Execute the HTTP requests that will fail
-    try {
-      await httpCommunication.get('/test-route');
-    } catch (error) {
-      // Expected behavior: Circuit breaker opens after the third failed request
-      expect(error).toBeDefined();
-      expect(error.message).toBe('Fake error 1');
-    }
-
-    try {
-      await httpCommunication.get('/test-route');
-    } catch (error) {
-      // Expected behavior: Circuit breaker opens after the third failed request
-      expect(error).toBeDefined();
-      expect(error.message).toBe('Fake error 2');
-    }
-
-    try {
-      await httpCommunication.get('/test-route');
-    } catch (error) {
-      // Expected behavior: Circuit breaker opens after the third failed request
-      expect(error).toBeDefined();
-      expect(error.message).toBe('Fake error 3');
-    }
-
-    // Attempt another request after the circuit is open
-    try {
-      await httpCommunication.get('/test-route');
-    } catch (error) {
-      // Expected behavior: Fallback response should be returned due to the open circuit
-      expect(error instanceof CircuitOpenError).toBe(true);
-    }
-
-    // Check if the 'get' method was called three times
-    expect(httpCommunication.get).toHaveBeenCalledTimes(4);
-
-    // Check if the 'get' method was called with '/test-route' as an argument
-    expect(httpCommunication.get).toHaveBeenCalledWith('/test-route');
-  });
-
-  test('Circuit closes after successful request', async () => {
-    // Mock the potentially unreliable HTTP request to always succeed
-
+  test('First request should pass', async () => {
+    // first successful request
+    httpCommunication.axiosClient.request = jest.fn(async () => {
+      return { success: true, data: { ok: true, count: numberOfRequests++ } };
+    });
+    await httpCommunication.get(makeURL('/test-route'));
   })
 
+  test('Circuit opens after threshold of failed requests is breached', async () => {
+    // failure counter tracks number of errors
+    httpCommunication.axiosClient.request = jest.fn(async () => {
+      throw new Error(`Fake error ${numberOfRequests++}`);
+    });
+    while (numberOfRequests <= 10) {
+      try {
+        await httpCommunication.get(makeURL('/test-route'));
+        fail('should not succeed');
+      } catch (error) {
+        failStart = Date.now();
+        // Expected behavior: Circuit breaker opens after the third failed request
+        expect(error).toBeDefined();
+        expect(error.message).toBe(`Fake error ${numberOfRequests - 1}`);
+      }
+    }
+    // Circuit opens after 80% failure
+    try {
+      await httpCommunication.get(makeURL('/test-route'));
+      fail('should not succeed');
+    } catch (error) {
+      // Expected behavior: Fallback response should be returned due to the open circuit
+      expect(error).toBeInstanceOf(CircuitOpenError);
+    }
+  });
 
-  // Add more tests as needed to cover different scenarios and behaviors of the circuit breaker
+  test('Circuit half opens after reset timeout', async () => {
+    await new Promise(res => {
+      setTimeout(res, 1_000 - (Date.now() - failStart) + 100);
+    });
+    // half open state
+    httpCommunication.axiosClient.request = jest.fn(async () => {
+      return { success: true, data: { ok: true, count: numberOfRequests++ } };
+    });
+    const result = await httpCommunication.get(makeURL('/test-route'));
+    expect(result).toBeDefined();
+  });
 });
+

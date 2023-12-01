@@ -31,6 +31,16 @@ interface HTTPCommunicationConfig {
     };
 }
 declare const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig;
+interface DefaultContextValue {
+    traceId: string;
+    spanId: string;
+    reqStartTime: number;
+    userId?: string;
+    ab: string;
+    debug?: string;
+    requestContextToken?: string;
+    path?: string;
+}
 declare class CircuitOpenError extends Error {
     method: METHOD;
     route: string;
@@ -88,7 +98,7 @@ declare class HTTPCommunication {
      * @param customContextValue any custom values that you want to store in the context
      * Return extracted values from the req headers and any custom values pass to generate the context object
      */
-    static getRequestContext(req: Request, customContextValue?: Record<string, unknown>): Record<string, any>;
+    static getRequestContext<T>(req: Request, customContextValue?: T): DefaultContextValue & T;
     static generateHexString(size: number): string;
     /**
      * handleError handles all errors
@@ -105,9 +115,14 @@ declare class HTTPCommunication {
         requestContextToken?: string;
     }): Record<string, any>;
     /**
-     * makeRequest prepares and fires a request
+     * makeRequest prepares and fires a request. It will not honour circuit breaker.
      **/
-    private makeRequest;
+    makeRequest(params: {
+        method: METHOD;
+        route: string;
+        request?: HTTPRequest;
+        headers?: Record<string, string>;
+    }): Promise<any>;
     /**
      * HTTP POST Request
      */
