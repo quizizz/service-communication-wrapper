@@ -161,6 +161,7 @@ class HTTPCommunication {
         timeout: 5000, // Set a timeout for requests
         resetTimeout: 10000, // Time in milliseconds to wait before attempting to close the circuit
         errorThresholdPercentage: 90, // Percentage of failed requests before opening the circuit
+        allowWarmUp: true,
         ...circuitBreakerConfig?.options,
       });
 

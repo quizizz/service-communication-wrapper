@@ -11,6 +11,7 @@ describe('Circuit Breaker Test', () => {
       disable: false,
       options: {
         resetTimeout: 1_000,
+        allowWarmUp: false,
       }
     }
   });
