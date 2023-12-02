@@ -1,6 +1,4 @@
-import { circuitBreaker, opposum } from './helpers/circuit-breaker';
+import opossum from 'opossum';
 
 export * from './http';
-export { circuitBreaker };
-export { opposum };
-
+export { opossum };

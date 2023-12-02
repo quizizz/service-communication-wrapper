@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="17" failures="0" errors="0" time="1.591">
-  <testsuite name="HttpCommunication" errors="0" failures="0" skipped="0" timestamp="2023-12-01T10:43:34" time="0.34" tests="14">
+<testsuites name="jest tests" tests="17" failures="0" errors="0" time="1.479">
+  <testsuite name="HttpCommunication" errors="0" failures="0" skipped="0" timestamp="2023-12-02T10:04:42" time="0.287" tests="14">
     <testcase classname="HttpCommunication Constructor should initialize with default values" name="HttpCommunication Constructor should initialize with default values" time="0.003">
     </testcase>
     <testcase classname="HttpCommunication Constructor should override axios config if provided" name="HttpCommunication Constructor should override axios config if provided" time="0.002">
     </testcase>
-    <testcase classname="HttpCommunication getRequestContext should generate a request context from the request" name="HttpCommunication getRequestContext should generate a request context from the request" time="0">
+    <testcase classname="HttpCommunication getRequestContext should generate a request context from the request" name="HttpCommunication getRequestContext should generate a request context from the request" time="0.001">
     </testcase>
     <testcase classname="HttpCommunication getRequestContext should generate a request context even if route field is empty" name="HttpCommunication getRequestContext should generate a request context even if route field is empty" time="0">
     </testcase>
     <testcase classname="HttpCommunication generateHexString should generate a hex string of the specified size" name="HttpCommunication generateHexString should generate a hex string of the specified size" time="0.001">
     </testcase>
-    <testcase classname="HttpCommunication handleError should throw QError if response status is &gt;= 400" name="HttpCommunication handleError should throw QError if response status is &gt;= 400" time="0.006">
+    <testcase classname="HttpCommunication handleError should throw QError if response status is &gt;= 400" name="HttpCommunication handleError should throw QError if response status is &gt;= 400" time="0.005">
     </testcase>
     <testcase classname="HttpCommunication handleError should throw QError with default errorType if not provided" name="HttpCommunication handleError should throw QError with default errorType if not provided" time="0.001">
     </testcase>
@@ -21,19 +21,19 @@
     </testcase>
     <testcase classname="HttpCommunication populateHeadersFromContext should populate headers from the context" name="HttpCommunication populateHeadersFromContext should populate headers from the context" time="0">
     </testcase>
-    <testcase classname="HttpCommunication populateHeadersFromContext should generate a traceId if not provided in the context" name="HttpCommunication populateHeadersFromContext should generate a traceId if not provided in the context" time="0.001">
+    <testcase classname="HttpCommunication populateHeadersFromContext should generate a traceId if not provided in the context" name="HttpCommunication populateHeadersFromContext should generate a traceId if not provided in the context" time="0">
     </testcase>
     <testcase classname="HttpCommunication makeRequest should make a GET request and return data" name="HttpCommunication makeRequest should make a GET request and return data" time="0.001">
     </testcase>
-    <testcase classname="HttpCommunication makeRequest should handle errors correctly" name="HttpCommunication makeRequest should handle errors correctly" time="0.001">
+    <testcase classname="HttpCommunication makeRequest should handle errors correctly" name="HttpCommunication makeRequest should handle errors correctly" time="0">
     </testcase>
     <testcase classname="HttpCommunication HTTP Method Wrappers should make a POST request" name="HttpCommunication HTTP Method Wrappers should make a POST request" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="Circuit Breaker Test" errors="0" failures="0" skipped="0" timestamp="2023-12-01T10:43:34" time="1.473" tests="3">
-    <testcase classname="Circuit Breaker Test First request should pass" name="Circuit Breaker Test First request should pass" time="0.002">
+  <testsuite name="Circuit Breaker Test" errors="0" failures="0" skipped="0" timestamp="2023-12-02T10:04:42" time="1.372" tests="3">
+    <testcase classname="Circuit Breaker Test First request should pass" name="Circuit Breaker Test First request should pass" time="0.003">
     </testcase>
-    <testcase classname="Circuit Breaker Test Circuit opens after threshold of failed requests is breached" name="Circuit Breaker Test Circuit opens after threshold of failed requests is breached" time="0.003">
+    <testcase classname="Circuit Breaker Test Circuit opens after threshold of failed requests is breached" name="Circuit Breaker Test Circuit opens after threshold of failed requests is breached" time="0.005">
     </testcase>
     <testcase classname="Circuit Breaker Test Circuit half opens after reset timeout" name="Circuit Breaker Test Circuit half opens after reset timeout" time="1.1">
     </testcase>

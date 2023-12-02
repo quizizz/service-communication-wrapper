@@ -35,57 +35,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HttpCommunication = exports.HTTPCommunication = exports.HTTPCommunicationAxiosDefaultConfig = exports.METHOD = exports.createRequestURL = exports.CircuitBreakerDefaultFallbackFunction = exports.CircuitOpenError = void 0;
+exports.createRequestURL = exports.generateHexString = exports.METHOD = exports.HttpCommunication = exports.CircuitOpenError = exports.CircuitBreakerDefaultFallbackFunction = exports.HTTPCommunication = exports.HTTPCommunicationAxiosDefaultConfig = void 0;
 const opossum_1 = __importDefault(require("opossum"));
 const error_1 = __importDefault(require("../helpers/error"));
 const axios_1 = __importStar(require("axios"));
-const node_perf_hooks_1 = require("node:perf_hooks");
-const node_crypto_1 = __importDefault(require("node:crypto"));
 // @ts-ignore
 const opossum_prometheus_1 = __importDefault(require("opossum-prometheus"));
-var METHOD;
-(function (METHOD) {
-    METHOD["POST"] = "post";
-    METHOD["GET"] = "get";
-    METHOD["DELETE"] = "delete";
-    METHOD["PATCH"] = "patch";
-    METHOD["PUT"] = "put";
-})(METHOD || (exports.METHOD = METHOD = {}));
-const HTTPCommunicationAxiosDefaultConfig = Object.assign(Object.assign({}, Object.assign(Object.assign({}, axios_1.default.defaults), { headers: undefined })), { headers: {
+const utils_1 = require("../helpers/utils");
+Object.defineProperty(exports, "METHOD", { enumerable: true, get: function () { return utils_1.METHOD; } });
+Object.defineProperty(exports, "createRequestURL", { enumerable: true, get: function () { return utils_1.createRequestURL; } });
+Object.defineProperty(exports, "generateHexString", { enumerable: true, get: function () { return utils_1.generateHexString; } });
+const circuit_breaker_utils_1 = require("../helpers/circuit-breaker-utils");
+Object.defineProperty(exports, "CircuitOpenError", { enumerable: true, get: function () { return circuit_breaker_utils_1.CircuitOpenError; } });
+Object.defineProperty(exports, "CircuitBreakerDefaultFallbackFunction", { enumerable: true, get: function () { return circuit_breaker_utils_1.CircuitBreakerDefaultFallbackFunction; } });
+const request_context_1 = require("../helpers/request-context");
+exports.HTTPCommunicationAxiosDefaultConfig = Object.assign(Object.assign({}, Object.assign(Object.assign({}, axios_1.default.defaults), { headers: undefined })), { headers: {
         'Content-Type': 'application/json',
     }, responseType: 'json', validateStatus: (status) => {
         return status <= 504;
     } });
-exports.HTTPCommunicationAxiosDefaultConfig = HTTPCommunicationAxiosDefaultConfig;
-class CircuitOpenError extends Error {
-    constructor(args) {
-        super('circuit open');
-        this.method = args.method;
-        this.route = args.route;
-        this.request = args.request;
-        this.headers = args.headers;
-    }
-}
-exports.CircuitOpenError = CircuitOpenError;
-const CircuitBreakerDefaultFallbackFunction = (req, error) => __awaiter(void 0, void 0, void 0, function* () {
-    // This is the fallback logic you want to execute when the circuit is open or requests fail
-    // For instance, return a default value or perform an alternative action
-    if ((error === null || error === void 0 ? void 0 : error.message) === 'Breaker is open') {
-        throw new CircuitOpenError(req);
-    }
-    throw error;
-});
-exports.CircuitBreakerDefaultFallbackFunction = CircuitBreakerDefaultFallbackFunction;
-/**
- * createRequestURL creates a url given query parameters
- */
-function createRequestURL(url, query) {
-    const searchParams = new URLSearchParams(query);
-    const finalURL = new URL(url);
-    finalURL.search = searchParams.toString();
-    return finalURL.toString();
-}
-exports.createRequestURL = createRequestURL;
 /**
  * HTTPCommunication wrapper
  */
@@ -97,7 +65,7 @@ class HTTPCommunication {
         var _a;
         this.name = name;
         // default axios config
-        this.axiosConfig = HTTPCommunicationAxiosDefaultConfig;
+        this.axiosConfig = exports.HTTPCommunicationAxiosDefaultConfig;
         if (axiosConfig) {
             this.axiosConfig = Object.assign(Object.assign({}, this.axiosConfig), axiosConfig);
         }
@@ -105,26 +73,12 @@ class HTTPCommunication {
         this.errorHandler = errorHandler;
         this.contextStorage = contextStorage;
         if (!(circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.disable)) {
-            this.circuitBreaker = new opossum_1.default(this.makeRequest.bind(this), Object.assign({ timeout: 5000, resetTimeout: 10000, errorThresholdPercentage: 90 }, circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.options));
-            this.circuitBreaker.fallback((_a = circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.fallbackFunction) !== null && _a !== void 0 ? _a : CircuitBreakerDefaultFallbackFunction);
+            this.circuitBreaker = new opossum_1.default(this.makeRequest.bind(this), Object.assign(Object.assign({}, circuit_breaker_utils_1.CircuitBreakerDefaultOverrideOptions), circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.options));
+            this.circuitBreaker.fallback((_a = circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.fallbackFunction) !== null && _a !== void 0 ? _a : circuit_breaker_utils_1.CircuitBreakerDefaultFallbackFunction);
             if (circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.metricsRegistry) {
                 this.metrics = new opossum_prometheus_1.default({ circuits: [this.circuitBreaker], registry: circuitBreakerConfig.metricsRegistry });
             }
         }
-    }
-    /**
-     * Function to generate the context object
-     * @param req Express request
-     * @param customContextValue any custom values that you want to store in the context
-     * Return extracted values from the req headers and any custom values pass to generate the context object
-     */
-    static getRequestContext(req, customContextValue) {
-        var _a, _b;
-        const start = node_perf_hooks_1.performance.now();
-        return Object.assign({ reqStartTime: start, traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : HTTPCommunication.generateHexString(16), spanId: HTTPCommunication.generateHexString(8), userId: ((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id) ? String(req.user.id) : req.get('x-q-userid'), ab: req.get('x-q-ab-route'), debug: req.get('x-q-debug'), requestContextToken: req.get('x-q-request-context-token'), path: (_b = req === null || req === void 0 ? void 0 : req.route) === null || _b === void 0 ? void 0 : _b.path }, customContextValue);
-    }
-    static generateHexString(size) {
-        return node_crypto_1.default.randomBytes(size).toString("hex");
     }
     /**
      * handleError handles all errors
@@ -164,7 +118,7 @@ class HTTPCommunication {
      */
     populateHeadersFromContext(ctx) {
         const customHeaders = {
-            'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : HTTPCommunication.generateHexString(32),
+            'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : (0, utils_1.generateHexString)(32),
         };
         if (ctx) {
             if (ctx.userId)
@@ -185,7 +139,7 @@ class HTTPCommunication {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const { route, method, request, headers = {} } = params;
-            const requestURL = createRequestURL(route, request === null || request === void 0 ? void 0 : request.query);
+            const requestURL = (0, utils_1.createRequestURL)(route, request === null || request === void 0 ? void 0 : request.query);
             const requestContext = this.contextStorage ? this.contextStorage.getStore() : null;
             let finalHeaders = {};
             if (requestContext) {
@@ -209,7 +163,7 @@ class HTTPCommunication {
      */
     post(route, request, headers) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.executeHTTPRequest(METHOD.POST, route, request, headers);
+            const data = yield this.executeHTTPRequest(utils_1.METHOD.POST, route, request, headers);
             return data;
         });
     }
@@ -218,7 +172,7 @@ class HTTPCommunication {
      */
     put(route, request, headers) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.executeHTTPRequest(METHOD.PUT, route, request, headers);
+            const data = yield this.executeHTTPRequest(utils_1.METHOD.PUT, route, request, headers);
             return data;
         });
     }
@@ -227,7 +181,7 @@ class HTTPCommunication {
      */
     patch(route, request, headers) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.executeHTTPRequest(METHOD.PATCH, route, request, headers);
+            const data = yield this.executeHTTPRequest(utils_1.METHOD.PATCH, route, request, headers);
             return data;
         });
     }
@@ -236,7 +190,7 @@ class HTTPCommunication {
      */
     delete(route, request, headers) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.executeHTTPRequest(METHOD.DELETE, route, request, headers);
+            const data = yield this.executeHTTPRequest(utils_1.METHOD.DELETE, route, request, headers);
             return data;
         });
     }
@@ -245,7 +199,7 @@ class HTTPCommunication {
      **/
     get(route, request, headers) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.executeHTTPRequest(METHOD.GET, route, request, headers);
+            const data = yield this.executeHTTPRequest(utils_1.METHOD.GET, route, request, headers);
             return data;
         });
     }
@@ -260,3 +214,5 @@ class HTTPCommunication {
 }
 exports.HTTPCommunication = HTTPCommunication;
 exports.HttpCommunication = HTTPCommunication;
+HTTPCommunication.getRequestContext = request_context_1.getRequestContext;
+HTTPCommunication.generateHexString = utils_1.generateHexString;

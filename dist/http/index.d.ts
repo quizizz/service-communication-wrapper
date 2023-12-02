@@ -3,84 +3,48 @@ import CircuitBreaker from 'opossum';
 import { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import PrometheusMetrics from 'opossum-prometheus';
+import { METHOD, createRequestURL, generateHexString } from '../helpers/utils';
+import { CircuitOpenError, CircuitBreakerDefaultFallbackFunction } from '../helpers/circuit-breaker-utils';
+import { getRequestContext } from '../helpers/request-context';
 import { Registry } from 'prom-client';
-type RequestErrorHandler = (params: Record<string, any>, response: AxiosResponse) => void;
-declare enum METHOD {
-    POST = "post",
-    GET = "get",
-    DELETE = "delete",
-    PATCH = "patch",
-    PUT = "put"
+export type RequestErrorHandler = (params: Record<string, any>, response: AxiosResponse) => void;
+export interface HTTPCommunicationConfig {
+    name: string;
+    axiosConfig?: AxiosRequestConfig;
+    contextStorage?: AsyncLocalStorage<any>;
+    errorHandler?: RequestErrorHandler;
+    circuitBreakerConfig?: CircuitBreakerConfig;
 }
-type CircuitBreakerFallbackMethod = (request: {
+export declare const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig;
+/**
+ * RequestPayload contains body and query for the outgoing request
+ */
+export interface RequestPayload extends Record<string, any> {
+    body?: any;
+    query?: string | Record<string, string> | string[][] | URLSearchParams | undefined;
+}
+/**
+ * CircuitBreakerConfig is the structure for the config of circuit breaker usage
+ */
+export interface CircuitBreakerConfig {
+    options?: CircuitBreaker.Options;
+    disable?: boolean;
+    metricsRegistry?: Registry;
+    fallbackFunction?: CircuitBreakerFallbackMethod;
+}
+/**
+ * CircuitBreakerFallbackMethod is structure of the fallback method for errors in circuit breaker
+ */
+export type CircuitBreakerFallbackMethod = (request: {
     method: METHOD;
     route: string;
     request: Request;
     headers: Record<string, any>;
 }, error?: Error) => void;
-interface HTTPCommunicationConfig {
-    name: string;
-    axiosConfig?: AxiosRequestConfig;
-    contextStorage?: AsyncLocalStorage<any>;
-    errorHandler?: RequestErrorHandler;
-    circuitBreakerConfig?: {
-        options?: CircuitBreaker.Options;
-        disable?: boolean;
-        metricsRegistry?: Registry;
-        fallbackFunction?: CircuitBreakerFallbackMethod;
-    };
-}
-declare const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig;
-interface DefaultContextValue {
-    traceId: string;
-    spanId: string;
-    reqStartTime: number;
-    userId?: string;
-    ab: string;
-    debug?: string;
-    requestContextToken?: string;
-    path?: string;
-}
-declare class CircuitOpenError extends Error {
-    method: METHOD;
-    route: string;
-    request: Request;
-    headers: Record<string, any>;
-    constructor(args: {
-        method: METHOD;
-        route: string;
-        request: any;
-        headers: Record<string, any>;
-    });
-}
-declare const CircuitBreakerDefaultFallbackFunction: CircuitBreakerFallbackMethod;
-/**
- * Request
- */
-interface Request {
-    user?: {
-        id?: string;
-    };
-    get(key: string): any;
-    route?: {
-        path?: string;
-    };
-}
-/**
- * HTTPRequest is the structure of the incoming request
- */
-interface HTTPRequest extends Record<string, any> {
-    body?: any;
-    query?: string | Record<string, string> | string[][] | URLSearchParams | undefined;
-}
-/**
- * createRequestURL creates a url given query parameters
- */
-declare function createRequestURL(url: string, query?: string | Record<string, string> | string[][] | URLSearchParams): string;
 /**
  * HTTPCommunication wrapper
  */
-declare class HTTPCommunication {
+export declare class HTTPCommunication {
     name: string;
     axiosClient: Axios;
     axiosConfig?: AxiosRequestConfig;
@@ -92,14 +56,6 @@ declare class HTTPCommunication {
      * HTTPCommunication to communicate with another service
      */
     constructor({ name, axiosConfig, contextStorage, errorHandler, circuitBreakerConfig }: HTTPCommunicationConfig);
-    /**
-     * Function to generate the context object
-     * @param req Express request
-     * @param customContextValue any custom values that you want to store in the context
-     * Return extracted values from the req headers and any custom values pass to generate the context object
-     */
-    static getRequestContext<T>(req: Request, customContextValue?: T): DefaultContextValue & T;
-    static generateHexString(size: number): string;
     /**
      * handleError handles all errors
      */
@@ -120,29 +76,31 @@ declare class HTTPCommunication {
     makeRequest(params: {
         method: METHOD;
         route: string;
-        request?: HTTPRequest;
+        request?: RequestPayload;
         headers?: Record<string, string>;
     }): Promise<any>;
     /**
      * HTTP POST Request
      */
-    post<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
+    post<T>(route: string, request?: RequestPayload, headers?: Record<string, string>): Promise<T>;
     /**
      * HTTP PUT Request
      */
-    put<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
+    put<T>(route: string, request?: RequestPayload, headers?: Record<string, string>): Promise<T>;
     /**
      * HTTP PATCH Request
      */
-    patch<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
+    patch<T>(route: string, request?: RequestPayload, headers?: Record<string, string>): Promise<T>;
     /**
      * HTTP DELETE Request
      */
-    delete<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
+    delete<T>(route: string, request?: RequestPayload, headers?: Record<string, string>): Promise<T>;
     /**
      * HTTP POST Request
      **/
-    get<T>(route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<T>;
-    executeHTTPRequest(method: METHOD, route: string, request?: HTTPRequest, headers?: Record<string, string>): Promise<any>;
+    get<T>(route: string, request?: RequestPayload, headers?: Record<string, string>): Promise<T>;
+    executeHTTPRequest(method: METHOD, route: string, request?: RequestPayload, headers?: Record<string, string>): Promise<any>;
+    static getRequestContext: typeof getRequestContext;
+    static generateHexString: typeof generateHexString;
 }
-export { CircuitOpenError, CircuitBreakerDefaultFallbackFunction, createRequestURL, HTTPRequest, RequestErrorHandler, HTTPCommunicationConfig, METHOD, HTTPCommunicationAxiosDefaultConfig, Request, HTTPCommunication, HTTPCommunication as HttpCommunication, };
+export { CircuitBreakerDefaultFallbackFunction, CircuitOpenError, HTTPCommunication as HttpCommunication, METHOD, generateHexString, createRequestURL, };

@@ -1,9 +1,10 @@
 /** @type {import('@types/jest')} */
 
-import { HTTPCommunication, HTTPCommunicationAxiosDefaultConfig, METHOD, createRequestURL } from '../../src/';
+import { HTTPCommunication, HTTPCommunicationAxiosDefaultConfig, METHOD, createRequestURL, generateHexString } from '../../src/';
 
 import Axios from 'axios';
 import QError from '../../src/helpers/error.ts';
+import { getRequestContext } from '../../src/helpers/request-context.ts';
 
 jest.mock('axios');
 
@@ -108,7 +109,7 @@ describe('HttpCommunication', () => {
 				user: { id: '321' },
 			};
 
-			const context = HTTPCommunication.getRequestContext(req);
+			const context = getRequestContext(req);
 
 			expect(context.traceId).toBe('test-trace-id-1');
 			expect(context.userId).toBe('321');
@@ -121,7 +122,7 @@ describe('HttpCommunication', () => {
 	describe('generateHexString', () => {
 		it('should generate a hex string of the specified size', () => {
 			const size = 16;
-			const hexString = HTTPCommunication.generateHexString(size);
+			const hexString = generateHexString(size);
 			expect(hexString).toMatch(/^[0-9a-f]+$/);
 			expect(hexString.length).toBe(size * 2); // Each byte is represented by two hex characters
 		});
