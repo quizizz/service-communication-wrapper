@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CircuitBreakerDefaultFallbackFunction = exports.CircuitOpenError = exports.CircuitBreakerDefaultOverrideOptions = void 0;
 /**
@@ -25,24 +16,29 @@ exports.CircuitBreakerDefaultOverrideOptions = {
  * CircuitOpenError denotes error that the circuit is open
  */
 class CircuitOpenError extends Error {
+    method;
+    route;
+    request;
+    headers;
     constructor(args) {
         super('circuit open');
-        this.method = args === null || args === void 0 ? void 0 : args.method;
-        this.route = args === null || args === void 0 ? void 0 : args.route;
-        this.request = args === null || args === void 0 ? void 0 : args.request;
-        this.headers = args === null || args === void 0 ? void 0 : args.headers;
+        this.method = args?.method;
+        this.route = args?.route;
+        this.request = args?.request;
+        this.headers = args?.headers;
     }
 }
 exports.CircuitOpenError = CircuitOpenError;
 /**
  * CircuitBreakerFallbackMethod is structure of the default fallback method for all errors
  */
-const CircuitBreakerDefaultFallbackFunction = (req, error) => __awaiter(void 0, void 0, void 0, function* () {
+const CircuitBreakerDefaultFallbackFunction = async (req, error) => {
     // This is the fallback logic you want to execute when the circuit is open or requests fail
     // For instance, return a default value or perform an alternative action
-    if ((error === null || error === void 0 ? void 0 : error.message) === 'Breaker is open') {
+    if (error?.message === 'Breaker is open') {
         throw new CircuitOpenError(req);
     }
     throw error;
-});
+};
 exports.CircuitBreakerDefaultFallbackFunction = CircuitBreakerDefaultFallbackFunction;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2lyY3VpdC1icmVha2VyLXV0aWxzLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL2hlbHBlcnMvY2lyY3VpdC1icmVha2VyLXV0aWxzLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7OztBQUdBOzs7O0dBSUc7QUFDVSxRQUFBLG9DQUFvQyxHQUFHO0lBQ25ELE9BQU8sRUFBRSxJQUFJLEVBQUUsNkJBQTZCO0lBQzVDLFlBQVksRUFBRSxLQUFLLEVBQUUsc0VBQXNFO0lBQzNGLHdCQUF3QixFQUFFLEVBQUUsRUFBRSwyREFBMkQ7SUFDekYsV0FBVyxFQUFFLElBQUk7Q0FDakIsQ0FBQTtBQUVEOztHQUVHO0FBQ0gsTUFBYSxnQkFBaUIsU0FBUSxLQUFLO0lBQzFDLE1BQU0sQ0FBVTtJQUNoQixLQUFLLENBQVU7SUFDZixPQUFPLENBQVc7SUFDbEIsT0FBTyxDQUF1QjtJQUU5QixZQUFZLElBS1g7UUFDQSxLQUFLLENBQUMsY0FBYyxDQUFDLENBQUM7UUFDdEIsSUFBSSxDQUFDLE1BQU0sR0FBRyxJQUFJLEVBQUUsTUFBTSxDQUFDO1FBQzNCLElBQUksQ0FBQyxLQUFLLEdBQUcsSUFBSSxFQUFFLEtBQUssQ0FBQztRQUN6QixJQUFJLENBQUMsT0FBTyxHQUFHLElBQUksRUFBRSxPQUFPLENBQUM7UUFDN0IsSUFBSSxDQUFDLE9BQU8sR0FBRyxJQUFJLEVBQUUsT0FBTyxDQUFDO0lBQzlCLENBQUM7Q0FDRDtBQWxCRCw0Q0FrQkM7QUFFRDs7R0FFRztBQUNJLE1BQU0scUNBQXFDLEdBQUcsS0FBSyxFQUFFLEdBQVMsRUFBRSxLQUFhLEVBQUUsRUFBRTtJQUN2RiwyRkFBMkY7SUFDM0Ysd0VBQXdFO0lBQ3hFLElBQUksS0FBSyxFQUFFLE9BQU8sS0FBSyxpQkFBaUIsRUFBRSxDQUFDO1FBQzFDLE1BQU0sSUFBSSxnQkFBZ0IsQ0FBQyxHQUFHLENBQUMsQ0FBQztJQUNqQyxDQUFDO0lBQ0QsTUFBTSxLQUFLLENBQUM7QUFDYixDQUFDLENBQUM7QUFQVyxRQUFBLHFDQUFxQyx5Q0FPaEQifQ==
