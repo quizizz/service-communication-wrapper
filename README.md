@@ -157,13 +157,21 @@ async function main() {
 
 main().catch(console.log);
 ```
-5. All we need to do now to run everything:
+5. Run everything:
 	- Open a new terminal, and fire `node remote.js`
 	- In a new terminal, `node server.js`
 	- Finally, in another new terminal - `node client.js`
 
 ### Observations
-1. Initally, we'll see that all requests to the rpc are failing. Client makes request to server, which in turn makes requests to the remote machine.
-2. At the tenth request, 90% of all current requests will fail - which will trigger the circuit. Subsequent requsests will not be sent to the the remote server - for next 90% of sliding window.
-3. After the window, the server will again make an attempt to connect to the remote server. If it succeeds, circuit will be closed again. If it fails, circuit will remain open and all active requests will immediately continue to fail at the server, without ever hitting the remote machine.
+1. Initally, we'll see that all requests to the remote server are failing. Client makes request to server, which in turn makes requests to the remote machine. Error is thrown at the remote machine, which is handled by server and sent back to the client.
+2. At the tenth request (tenth second), 90% of all current requests have failed - which will trigger the circuit. Subsequent requsests will not be sent to the the remote server and will fail at the server itself. Client will receive error message stating that the circuit is open. This prevents the server and the remote to get overloaded due to pending requests, for the next 90% of the sliding window.
+3. After the sliding window has passed, the server will again make an attempt once to invoke the remote server. If it succeeds, circuit will be closed again and requests will start to flow normally. If it fails, circuit will remain open and all active requests will continue to immediately fail at the server, without ever hitting the remote machine for the next sliding window.
 4. Timeouts count as errors, and will open the circuit. If the condition for percentage of failed requests does not match, the circuit will never open - and all errors will continue.
+
+### Demo Video
+
+
+https://github.com/quizizz/service-communication-wrapper/assets/9463078/b6ebbf04-f3f8-4a45-b01f-3c95bd04047f
+
+
+
