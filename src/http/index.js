@@ -87,7 +87,7 @@ class HttpCommunication {
       }
 
       this.handleError(params, response);
-      return response.data;
+      return [response.data, response.headers];
     }
 
     async post(route, request) {
