@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios';
+import { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 export type RequestErrorHandler = (params: any, response: any) => void;
 
@@ -8,8 +8,10 @@ export class HttpCommunication {
      * @param name
      * @param axiosConfig
      * @param contextStorage {AsyncLocalStorage}
+     * @param errorHandler {RequestErrorHandler}
+     * @param axiosInstance {AxiosInstance}
      */
-    constructor({ name, axiosConfig, contextStorage, errorHandler } : { name: string, axiosConfig?: AxiosRequestConfig, contextStorage?: any, errorHandler?: RequestErrorHandler });
+    constructor({ name, axiosConfig, contextStorage, errorHandler, axiosInstance }: { name: string, axiosConfig?: AxiosRequestConfig, contextStorage?: any, errorHandler?: RequestErrorHandler, axiosInstance?: AxiosInstance });
 
     /**
      * Function to generate the context object
