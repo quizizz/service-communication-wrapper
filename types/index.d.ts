@@ -8,6 +8,8 @@ export class HttpCommunication {
      * @param name
      * @param axiosConfig
      * @param contextStorage {AsyncLocalStorage}
+     * @param errorHandler {RequestErrorHandler}
+     * @param axiosInstance {AxiosInstance}
      */
     constructor({ name, axiosConfig, contextStorage, errorHandler, axiosInstance } : { name: string, axiosConfig?: AxiosRequestConfig, contextStorage?: any, errorHandler?: RequestErrorHandler, axiosInstance?: AxiosInstance });
 
