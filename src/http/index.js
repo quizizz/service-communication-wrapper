@@ -10,13 +10,6 @@ class HttpCommunication {
     contextStorage;
     axiosClient;
 
-    /**
-     * @param {string} name
-     * @param {Axios.AxiosRequestConfig} axiosConfig
-     * @param {import('express').RequestHandler} contextStorage
-     * @param {function} errorHandler
-     * @param {Axios.AxiosInstance} axiosInstance
-     */
     constructor({ name, axiosConfig, contextStorage, errorHandler, axiosInstance }) {
       this.name = name;
       // default axios config
