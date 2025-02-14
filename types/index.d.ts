@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios';
+import { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 export class HttpCommunication {
     /**
@@ -6,8 +6,9 @@ export class HttpCommunication {
      * @param name
      * @param axiosConfig
      * @param contextStorage {AsyncLocalStorage}
+     * @param axiosInstance {AxiosInstance}
      */
-    constructor({ name, axiosConfig, contextStorage } : { name: string, axiosConfig?: AxiosRequestConfig, contextStorage?: any });
+    constructor({ name, axiosConfig, contextStorage, axiosInstance } : { name: string, axiosConfig?: AxiosRequestConfig, contextStorage?: any, axiosInstance?: AxiosInstance });
 
     /**
      * Function to generate the context object

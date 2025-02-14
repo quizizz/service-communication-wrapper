@@ -8,8 +8,9 @@ class HttpCommunication {
     name;
     axiosConfig;
     contextStorage;
+    axiosInstance;
 
-    constructor({ name, axiosConfig, contextStorage }) {
+    constructor({ name, axiosConfig, contextStorage, axiosInstance }) {
       this.name = name;
       // default axios config
       this.axiosConfig = {
@@ -26,6 +27,12 @@ class HttpCommunication {
       }
 
       this.contextStorage = contextStorage;
+      if (axiosInstance) {
+        axiosInstance.defaults = this.axiosConfig;
+        this.axiosInstance = axiosInstance;
+      } else {
+        this.axiosInstance = new Axios.Axios(this.axiosConfig);
+      }
     }
 
     static getRequestContext(req, customContextValue) {
@@ -122,7 +129,11 @@ class HttpCommunication {
       if (request.body) {
         req['data'] = request.body;
       }
-      response = await Axios(req);
+      if (this.axiosInstance) {
+        response = await this.axiosInstance(req);
+      } else {
+        response = await Axios(req);
+      }
 
       this.handleError(params, response);
       return response.data;
