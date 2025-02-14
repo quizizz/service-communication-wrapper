@@ -1,6 +1,6 @@
 import CircuitBreaker from 'opossum';
 import QError from '../helpers/error';
-import AxiosStatic, { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
+import AxiosStatic, { Axios, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { performance } from 'node:perf_hooks';
 import crypto from 'node:crypto';
 import { AsyncLocalStorage } from 'node:async_hooks';
@@ -37,7 +37,8 @@ interface HTTPCommunicationConfig {
     disable?: boolean;
     metricsRegistry?: Registry;
     fallbackFunction?: CircuitBreakerFallbackMethod;
-  }
+  },
+  axiosInstance?: AxiosInstance;
 }
 
 const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig = {
@@ -128,7 +129,7 @@ class HTTPCommunication {
   /**
    * HTTPCommunication to communicate with another service
    */
-  constructor({ name, axiosConfig, contextStorage, errorHandler, circuitBreakerConfig }: HTTPCommunicationConfig) {
+  constructor({ name, axiosConfig, contextStorage, errorHandler, circuitBreakerConfig, axiosInstance }: HTTPCommunicationConfig) {
     this.name = name;
 
     // default axios config
@@ -139,8 +140,12 @@ class HTTPCommunication {
         ...axiosConfig,
       };
     }
-
-    this.axiosClient = new Axios(this.axiosConfig);
+    if (axiosInstance) {
+      Object.assign(axiosInstance.defaults, this.axiosConfig);
+      this.axiosClient = axiosInstance;
+    } else {
+      this.axiosClient = new Axios(this.axiosConfig);
+    }
 
     this.errorHandler = errorHandler;
     this.contextStorage = contextStorage;
