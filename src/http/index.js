@@ -10,7 +10,14 @@ class HttpCommunication {
     contextStorage;
     axiosClient;
 
-    constructor({ name, axiosConfig, contextStorage, errorHandler }) {
+    /**
+     * @param {string} name
+     * @param {Axios.AxiosRequestConfig} axiosConfig
+     * @param {import('express').RequestHandler} contextStorage
+     * @param {function} errorHandler
+     * @param {Axios.AxiosInstance} axiosInstance
+     */
+    constructor({ name, axiosConfig, contextStorage, errorHandler, axiosInstance }) {
       this.name = name;
       // default axios config
       this.axiosConfig = {
@@ -30,7 +37,13 @@ class HttpCommunication {
         }
       }
 
-      this.axiosClient = new Axios.Axios(this.axiosConfig);
+      if (axiosInstance) {
+        axiosInstance.defaults = axiosConfig;
+        this.axiosClient = axiosInstance;
+      } else {
+        this.axiosClient = new Axios.Axios(this.axiosConfig);
+      }
+
       this.errorHandler = errorHandler;
       this.contextStorage = contextStorage;
     }
@@ -38,8 +51,8 @@ class HttpCommunication {
     static getRequestContext(req, customContextValue) {
       const start = performance.now()
       return {
-        traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : this.generateHexString(16),
-        spanId: this.generateHexString(8),
+        traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : HttpCommunication.generateHexString(16),
+        spanId: HttpCommunication.generateHexString(8),
         userId: (req.user && req.user.id)
           ? String(req.user.id)
           : req.get('x-q-userid'),
