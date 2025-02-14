@@ -10,7 +10,7 @@ class HttpCommunication {
     contextStorage;
     axiosClient;
 
-    constructor({ name, axiosConfig, contextStorage, errorHandler }) {
+    constructor({ name, axiosConfig, contextStorage, errorHandler, axiosInstance }) {
       this.name = name;
       // default axios config
       this.axiosConfig = {
@@ -30,7 +30,13 @@ class HttpCommunication {
         }
       }
 
-      this.axiosClient = new Axios.Axios(this.axiosConfig);
+      if (axiosInstance) {
+        axiosInstance.defaults = axiosConfig;
+        this.axiosClient = axiosInstance;
+      } else {
+        this.axiosClient = new Axios.Axios(this.axiosConfig);
+      }
+
       this.errorHandler = errorHandler;
       this.contextStorage = contextStorage;
     }
@@ -38,8 +44,8 @@ class HttpCommunication {
     static getRequestContext(req, customContextValue) {
       const start = performance.now()
       return {
-        traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : this.generateHexString(16),
-        spanId: this.generateHexString(8),
+        traceId: req.get('x-q-traceid') ? req.get('x-q-traceid') : HttpCommunication.generateHexString(16),
+        spanId: HttpCommunication.generateHexString(8),
         userId: (req.user && req.user.id)
           ? String(req.user.id)
           : req.get('x-q-userid'),
@@ -67,6 +73,7 @@ class HttpCommunication {
           throw new QError(error, errorType, {
               service: this.name,
               data: response.data,
+              status: response.status,
               request,
               method,
               route,
@@ -96,7 +103,7 @@ class HttpCommunication {
 
     populateHeadersFromContext(ctx) {
       const customHeaders = {
-        'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : this.generateHexString(32),
+        'X-Q-TRACEID': (ctx && ctx.traceId) ? ctx.traceId : HttpCommunication.generateHexString(32),
       };
       if (ctx) {
         if (ctx.userId) customHeaders['X-Q-USERID'] = ctx.userId;
