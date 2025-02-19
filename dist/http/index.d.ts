@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import CircuitBreaker from 'opossum';
-import { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Axios, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import PrometheusMetrics from 'opossum-prometheus';
 import { Registry } from 'prom-client';
@@ -29,6 +29,7 @@ interface HTTPCommunicationConfig {
         metricsRegistry?: Registry;
         fallbackFunction?: CircuitBreakerFallbackMethod;
     };
+    axiosInstance?: AxiosInstance;
 }
 declare const HTTPCommunicationAxiosDefaultConfig: AxiosRequestConfig;
 declare class CircuitOpenError extends Error {
@@ -81,7 +82,7 @@ declare class HTTPCommunication {
     /**
      * HTTPCommunication to communicate with another service
      */
-    constructor({ name, axiosConfig, contextStorage, errorHandler, circuitBreakerConfig }: HTTPCommunicationConfig);
+    constructor({ name, axiosConfig, contextStorage, errorHandler, circuitBreakerConfig, axiosInstance }: HTTPCommunicationConfig);
     /**
      * Function to generate the context object
      * @param req Express request

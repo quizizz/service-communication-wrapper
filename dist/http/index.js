@@ -93,7 +93,7 @@ class HTTPCommunication {
     /**
      * HTTPCommunication to communicate with another service
      */
-    constructor({ name, axiosConfig, contextStorage, errorHandler, circuitBreakerConfig }) {
+    constructor({ name, axiosConfig, contextStorage, errorHandler, circuitBreakerConfig, axiosInstance }) {
         var _a;
         this.name = name;
         // default axios config
@@ -101,7 +101,13 @@ class HTTPCommunication {
         if (axiosConfig) {
             this.axiosConfig = Object.assign(Object.assign({}, this.axiosConfig), axiosConfig);
         }
-        this.axiosClient = new axios_1.Axios(this.axiosConfig);
+        if (axiosInstance) {
+            Object.assign(axiosInstance.defaults, this.axiosConfig);
+            this.axiosClient = axiosInstance;
+        }
+        else {
+            this.axiosClient = new axios_1.Axios(this.axiosConfig);
+        }
         this.errorHandler = errorHandler;
         this.contextStorage = contextStorage;
         if (!(circuitBreakerConfig === null || circuitBreakerConfig === void 0 ? void 0 : circuitBreakerConfig.disable)) {
